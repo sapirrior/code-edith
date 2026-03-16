@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 from helper.banner import show_banner
 from utils.history import clear_history
 from utils.console import console
@@ -9,6 +10,7 @@ def handle_command(query):
     cmd = parts[0] if parts else ""
 
     if cmd == "clear":
+    	console.width = shutil.get_terminal_size().columns - 2
     	show_banner()
         
     elif cmd == "reset":
@@ -19,7 +21,7 @@ def handle_command(query):
         sys.exit(0)
 
     elif cmd == "help":
-        console.print("\n[orangex]Edith Commands:[/orangex]")
+        console.print("[orangex]Edith Commands:[/orangex]")
         console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
         console.print("[greyx]/reset[/greyx] - Wipe conversation history")
         console.print("[greyx]/exit [/greyx] - Stop Edith safely")

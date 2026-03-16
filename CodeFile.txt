@@ -1,0 +1,1321 @@
+ROOT_NAME code-edith
+CREATED_UTC 2026-03-16T14:13:32Z
+TOTAL_SOURCE_MB 0.03
+FILE_COUNT 25
+
+START_STRUCTURE
+code-edith/
+|-- .assets/
+|   |-- edith-asi-art.txt
+|   \-- edith-asi-unicode.txt
+|-- src/
+|   |-- config/
+|   |   |-- system.txt
+|   |   |-- tools.json
+|   |   \-- version.txt
+|   |-- engine/
+|   |   |-- __init__.py
+|   |   |-- chat.py
+|   |   \-- client.py
+|   |-- helper/
+|   |   |-- __init__.py
+|   |   |-- animation.py
+|   |   |-- banner.py
+|   |   |-- input.py
+|   |   \-- print_md.py
+|   |-- utils/
+|   |   |-- __init__.py
+|   |   |-- command_handler.py
+|   |   |-- console.py
+|   |   |-- env.py
+|   |   |-- history.py
+|   |   \-- signals.py
+|   \-- index.py
+|-- .gitignore
+|-- CodeFile
+|-- LICENSE
+|-- README.md
+\-- pyproject.toml
+END_STRUCTURE
+
+FILE_START .gitignore 62d09d126b32
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+wheels/
+sdist/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+src/test.json
+
+# Editor & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+FILE_END .gitignore 62d09d126b32
+
+FILE_START CodeFile 9ede002c7638
+ROOT_NAME code-edith
+CREATED_UTC 2026-03-16T05:35:49Z
+TOTAL_SIZE_MB 0.01
+
+START_STRUCTURE
+code-edith/
+|-- .assets/
+|   |-- edith-asi-art.txt
+|   \-- edith-asi-unicode.txt
+|-- src/
+|   |-- config/
+|   |   |-- system.txt
+|   |   |-- tools.json
+|   |   \-- version.txt
+|   |-- edith.egg-info/
+|   |   |-- PKG-INFO
+|   |   |-- SOURCES.txt
+|   |   |-- dependency_links.txt
+|   |   |-- entry_points.txt
+|   |   |-- requires.txt
+|   |   \-- top_level.txt
+|   |-- engine/
+|   |   |-- __init__.py
+|   |   |-- chat.py
+|   |   \-- client.py
+|   |-- helper/
+|   |   |-- __init__.py
+|   |   |-- animation.py
+|   |   |-- banner.py
+|   |   |-- input.py
+|   |   \-- print_md.py
+|   |-- utils/
+|   |   |-- __init__.py
+|   |   |-- command_handler.py
+|   |   |-- console.py
+|   |   |-- env.py
+|   |   |-- history.py
+|   |   \-- signals.py
+|   |-- index.py
+|   \-- test.json
+|-- .gitignore
+|-- LICENSE
+|-- README.md
+\-- pyproject.toml
+END_STRUCTURE
+
+FILE_START pyproject.toml 3b1d19774fda
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code-edith"
+dynamic = ["version"]
+description = "AI Coding Assistant CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Nolan Stark" }
+]
+keywords = ["cli", "ai", "assistant", "coding", "llm"]
+dependencies = [
+    "rich",
+    "python-dotenv",
+    "openai",
+    "halo",
+    "prompt_toolkit",
+    "pyperclip"
+]
+
+[project.scripts]
+code-edith = "index:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["index"]
+
+[tool.setuptools.dynamic]
+version = { file = "src/config/version.txt" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.json"]
+
+FILE_END pyproject.toml 3b1d19774fda
+
+FILE_START .gitignore 62d09d126b32
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+wheels/
+sdist/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+src/test.json
+
+# Editor & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+FILE_END .gitignore 62d09d126b32
+
+FILE_START LICENSE 6bf1c7453a82
+Copyright (c) 2026 Nolan Stark. All rights reserved.
+
+Permission is hereby granted to any person obtaining a copy of this software
+and associated documentation files (the "Software") to use, modify, and share
+the Software for personal, educational, non-commercial research, or internal
+purposes, subject to the following conditions:
+
+1. DISTRIBUTION & PUBLIC REDISTRIBUTION: You may not host, publish, or
+   distribute the Software or any modified version of it on public repositories,
+   websites, or platforms as a standalone product without (a) providing clear
+   credit to the original author and (b) including a link back to the original
+   repository. You may not distribute, sublicense, sell, or otherwise share
+   the Software in source or binary form for any purpose other than personal,
+   educational, or non-commercial sharing without prior written permission
+   from the copyright holder.
+
+2. COMMERCIAL RESTRICTION: You may not use the Software or any derivative work
+   for commercial purposes — including but not limited to selling, sublicensing,
+   offering it as a product or service, incorporating it into a commercial
+   product, or using it in any revenue-generating context — without explicit
+   written permission from Nolan Stark.
+
+3. PERSONAL & NON-COMMERCIAL SHARING: Permission is granted to use, modify,
+   and share this Software with others for personal, educational, or
+   non-commercial research purposes, provided that this copyright notice and
+   these conditions are retained in all copies or substantial portions of the
+   Software, and that appropriate credit and a link to the original repository
+   are included.
+
+4. ATTRIBUTION: Any permitted use, modification, or redistribution must retain
+   this copyright notice and these conditions in all copies or substantial
+   portions of the Software.
+
+5. MODIFICATIONS: You may modify the Software for personal use. Modified
+   versions may not be distributed or used commercially without explicit
+   written permission from the copyright holder.
+
+To request permission for distribution or commercial use, contact:
+Nolan Stark
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF,
+OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+FILE_END LICENSE 6bf1c7453a82
+
+FILE_START README.md ab1e033d4fa5
+# Code Edith
+
+**Code Edith** (`code-edith`) is a lightweight, terminal-based AI coding assistant. It connects to any AI model that implements the OpenAI-compatible response structure, giving you flexibility over your choice of provider or self-hosted model.
+
+> **Note:** This project is under active development. Features such as tool-calling are not yet available.
+
+---
+
+## Installation
+
+Install directly from GitHub using `pip`:
+
+```bash
+pip install git+https://github.com/sapirrior/code-edith
+```
+
+---
+
+## Configuration
+
+After installation, create a `.env` file in your **home directory** (`~/.env`) and define the following environment variables:
+
+```env
+EDITH_API_KEY=your_api_key
+EDITH_MODEL_NAME=your_model_name
+EDITH_BASE_URL=base_url_for_the_model
+```
+
+| Variable | Description |
+|---|---|
+| `EDITH_API_KEY` | API key for your chosen provider |
+| `EDITH_MODEL_NAME` | Model identifier (e.g. `gpt-4o`, `claude-3-5-sonnet`) |
+| `EDITH_BASE_URL` | Base URL of the OpenAI-compatible endpoint |
+
+---
+
+## Usage
+
+Once configured, launch Edith from any terminal:
+
+```bash
+edith
+```
+
+---
+
+## Reporting Issues
+
+If you encounter a bug or unexpected behavior, please open an issue on the [GitHub repository](https://github.com/sapirrior/code-edith/issues).
+
+---
+
+## License
+This project is licensed under a custom license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
+
+---
+
+***Happy Coding!***
+
+*by Nolan Stark.*
+
+FILE_END README.md ab1e033d4fa5
+
+FILE_START .assets/edith-asi-art.txt 02ddfd464968
+ ▛███▜
+▛█████▜
+ ▘▘ ▝▝
+FILE_END .assets/edith-asi-art.txt 02ddfd464968
+
+FILE_START .assets/edith-asi-unicode.txt dd1759322a25
+\u0020\u259B\u2588\u2588\u2588\u259C
+\u259B\u2588\u2588\u2588\u2588\u2588\u259C
+\u0020\u2598\u2598\u0020\u259D\u259D
+FILE_END .assets/edith-asi-unicode.txt dd1759322a25
+
+FILE_START src/index.py 283a66c5230b
+import os
+import time
+import utils.signals
+from utils.command_handler import handle_command
+from utils.history import add_history, get_history, clear_history
+from engine.chat import make_request
+from engine.client import load_client
+from helper.print_md import print_md
+from helper.input import get_input
+from helper.animation import animation
+from utils.console import console
+from helper.banner import show_banner
+from utils.env import load_home_env, load_env
+
+
+def load_all_envs_one_by_one():
+	
+	api_key = load_env("EDITH_API_KEY")
+	base_url = load_env("EDITH_BASE_URL")
+	model_name = load_env("EDITH_MODEL_NAME")
+	return api_key, base_url, model_name
+
+def main():
+	try:
+		show_banner()
+		api_key, base_url, model_name = load_all_envs_one_by_one()
+		animation(True, "Connecting...")
+		client = load_client(api_key, base_url)
+		animation(False)
+		
+		while True:
+			query = get_input().strip()
+			if not query: continue
+			if query.startswith("/"): handle_command(query); continue
+			add_history("user", query)
+			animation(True, "Thinking...")
+			
+			response = make_request(client, get_history(), model_name)
+			animation(False)
+			print_md(response)
+			add_history("assistant", response)
+			console.print("\n")
+		
+	except EOFError:
+		pass
+	except KeyboardInterrupt:
+		pass
+	finally:
+		animation(False)
+		console.print("[greyx]Goodbye![/greyx]")
+		exit(1)
+FILE_END src/index.py 283a66c5230b
+
+FILE_START src/config/system.txt e0838ee46a59
+You are Edith, a CLI-based coding agent for engineering tasks developed by Nolan Stark.
+
+RULES:
+1. Be concise—answer to the point, no fluff.
+3. Always output in markdown.
+4. Be honest and helpful and formal.
+5. Assume technical competence; skip obvious explanations.
+6. Prioritize actionable guidance over theory.
+7. always write structured Codes.
+FILE_END src/config/system.txt e0838ee46a59
+
+FILE_START src/config/version.txt 92521fc3cbd9
+1.0.0
+FILE_END src/config/version.txt 92521fc3cbd9
+
+FILE_START src/config/tools.json 14cde8087772
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "web_search",
+      "description": "Search the web for real-time data, current events, or external documentation not in training.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query string."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read_file",
+      "description": "Read and return the full text content of a local file for inspection, analysis, or debugging.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative or absolute path to the file."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "list_dir",
+      "description": "List all files and folders in a directory to explore project structure or verify file existence.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory path to list. Use '.' for current directory."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  }
+]
+
+FILE_END src/config/tools.json 14cde8087772
+
+FILE_START src/helper/banner.py 2799d61f7a6a
+import os
+from rich.panel import Panel
+from rich.align import Align
+from utils.console import console
+
+folder_name = os.path.basename(os.getcwd()) # Reads current folder name
+content = f"""
+[resetx]Welcome to Code Edith![/resetx]
+[orangex] ▛███▜[/orangex]
+[orangex]▛█████▜[/orangex]
+[orangex] ▘▘ ▝▝[/orangex]
+[greyx]Folder: {folder_name}[/greyx]
+[greyx]Tip: /help for information[/greyx]
+"""
+
+def show_banner():
+	try: # try/except block
+		console.clear()
+		banner_panel = Panel( # Initializes the panel
+			Align.left(content.strip()),
+			border_style = "orangex",
+			width = console.size.width - 2, # terminal-size - 2
+			title_align = "left",
+			title = "[bold orangex]Code Edith[/bold orangex]",
+			padding = (1, 1) # adds padding
+			)
+		console.print(banner_panel)
+	except Exception as e: # Error handle
+		console.print("[Error] Loading banner.") # Error message
+		exit(1)
+FILE_END src/helper/banner.py 2799d61f7a6a
+
+FILE_START src/helper/animation.py ba8d5a06dffa
+import sys
+from halo import Halo
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+# Global instance initialization
+_sp = Halo(
+    spinner={
+        "interval": 200,
+        "frames": [f"{ORANGEX}{c}{RESET}" for c in "✲✱❖"]
+    }
+)
+
+def animation(run: bool, text="Reasoning..."):
+    """
+    run: True to start/update, False to stop.
+    text: The message to display in Greyx.
+    """
+    if run:
+        # Update text dynamically (works even if already spinning)
+        _sp.text = f"{GREYX}{text}{RESET}"
+        _sp.start()
+    else:
+        # Stop the Halo spinner
+        _sp.stop()
+        
+        # The Fix: Move cursor to start (\r) and erase the entire line (\033[K)
+        # This gives print_md a completely blank canvas.
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+FILE_END src/helper/animation.py ba8d5a06dffa
+
+FILE_START src/helper/input.py 67a53d58d6e7
+from prompt_toolkit import prompt
+from prompt_toolkit.styles import Style
+
+# Minimalist Style: Just Orangex for the symbol
+style = Style.from_dict({
+    'symbol': '#d97757',
+    '': '#a0a0a0'
+})
+
+def get_input():
+    # The symbol is 3 characters: ">", ">", " "
+    message = [('class:symbol', '>> ')]
+
+    # Continuation creates the indent for wrapped lines (3 spaces)
+    def continuation(width, line_number, is_soft_wrap):
+        return [('class:symbol', '   ')]
+
+    return prompt(
+        message,
+        style=style,
+        prompt_continuation=continuation,
+        wrap_lines=True
+    ).strip()
+FILE_END src/helper/input.py 67a53d58d6e7
+
+FILE_START src/helper/print_md.py 6997f5225ee4
+from utils.console import console
+from rich.markdown import Markdown
+from rich.padding import Padding
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+def print_md(text):
+	try:
+		txt_md = Markdown(text.strip())
+		padded_md = Padding(txt_md, (0, 2, 0, 3))
+		console.print(padded_md)
+	except Exception as e:
+		console.print("[Error] prompt request.")
+		exit(1)
+FILE_END src/helper/print_md.py 6997f5225ee4
+
+FILE_START src/helper/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/helper/__init__.py e3b0c44298fc
+
+FILE_START src/utils/env.py f1903712faa5
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+from utils.console import console
+
+def load_home_env():
+	try:
+		home_path = Path.home() / ".env"
+		
+		if home_path.exists():
+			load_dotenv(dotenv_path=home_path)
+	except Exception as e:
+		console.print("[Error] Loading environmental variables.")
+		exit(1)
+
+load_home_env()
+
+def load_env(var):
+		val = os.environ.get(var)
+		if val is None:
+			console.print(f"[Error] Loading {var} environmental variable.")
+			exit(1)
+		else:
+			return val
+FILE_END src/utils/env.py f1903712faa5
+
+FILE_START src/utils/console.py eedfecaae05a
+from rich.console import Console
+from rich.theme import Theme
+from rich.markdown import Markdown
+
+theme_custom = Theme({ # Adds custom themes
+    "orangex": "rgb(217,119,87)", # orange color
+    "greyx": "rgb(128,128,128)", # grey color
+    "resetx": "default" # white color
+})
+
+try:
+	console = Console(theme=theme_custom) # installs console with custom themes
+	console.width = console.size.width # sets width
+except Exception as e:
+	console.print("[Error] Starting the console.")
+	exit(1) # exits if error occurs
+FILE_END src/utils/console.py eedfecaae05a
+
+FILE_START src/utils/history.py 74aad4a51707
+chat_history = []
+
+def add_history(role, content):
+	chat_history.append({"role": role, "content": content})
+
+def get_history():
+	return chat_history
+
+def clear_history():
+	global chat_history
+	chat_history = []
+FILE_END src/utils/history.py 74aad4a51707
+
+FILE_START src/utils/signals.py ebf63381cdbb
+import signal
+
+_UNCATCHABLE = {signal.SIGKILL, signal.SIGSTOP}
+
+for sig in signal.valid_signals() - _UNCATCHABLE:
+    try:
+        signal.signal(sig, signal.SIG_IGN)
+    except (ValueError, OSError, RuntimeError):
+        continue
+FILE_END src/utils/signals.py ebf63381cdbb
+
+FILE_START src/utils/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/utils/__init__.py e3b0c44298fc
+
+FILE_START src/utils/command_handler.py 5bc6aa08c59d
+import os
+import sys
+from helper.banner import show_banner
+from utils.history import clear_history
+from utils.console import console
+
+def handle_command(query):
+    parts = query[1:].lower().split()
+    cmd = parts[0] if parts else ""
+
+    if cmd == "clear":
+    	show_banner()
+        
+    elif cmd == "reset":
+        clear_history()
+        console.print("[orangex]  History reset. Memory wiped.[/orangex]\n")
+    
+    elif cmd == "exit":
+        sys.exit(0)
+
+    elif cmd == "help":
+        console.print("\n[orangex]Edith Commands:[/orangex]")
+        console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
+        console.print("[greyx]/reset[/greyx] - Wipe conversation history")
+        console.print("[greyx]/exit [/greyx] - Stop Edith safely")
+        console.print("[greyx]/help [/greyx] - Show this menu\n")
+    
+    else:
+        console.print(f"[orangex]Unknown command:[/orangex][greyx]/{cmd}[/greyx]\n")
+
+FILE_END src/utils/command_handler.py 5bc6aa08c59d
+
+FILE_START src/engine/client.py b91fdf4a9b95
+from openai import OpenAI
+from utils.console import console
+
+def load_client(key, url):
+	try:
+		client = OpenAI(api_key=key,base_url=url)
+		client.models.list() # do a tiny test without losing tokens
+		return client
+	except Exception as e:
+		console.print("[Error] connecting with server.")
+		exit(1)
+FILE_END src/engine/client.py b91fdf4a9b95
+
+FILE_START src/engine/chat.py eff77661ff3a
+from utils.console import console
+from pathlib import Path
+
+def make_request(client, msgs, model):
+    try:
+        # 1. Get the absolute path to THIS specific file (chat.py)
+        current_file = Path(__file__).resolve()
+        src_dir = current_file.parent.parent
+        path = src_dir / "config" / "system.txt"
+        
+        content = path.read_text().strip()
+        system = [{"role": "system", "content": content}]
+        messages = system + msgs
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            tools=None
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        console.print(f"[Error] Making message request to the model.")
+        exit(1)
+FILE_END src/engine/chat.py eff77661ff3a
+
+FILE_START src/engine/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/engine/__init__.py e3b0c44298fc
+
+
+FILE_END CodeFile 9ede002c7638
+
+FILE_START LICENSE 6bf1c7453a82
+Copyright (c) 2026 Nolan Stark. All rights reserved.
+
+Permission is hereby granted to any person obtaining a copy of this software
+and associated documentation files (the "Software") to use, modify, and share
+the Software for personal, educational, non-commercial research, or internal
+purposes, subject to the following conditions:
+
+1. DISTRIBUTION & PUBLIC REDISTRIBUTION: You may not host, publish, or
+   distribute the Software or any modified version of it on public repositories,
+   websites, or platforms as a standalone product without (a) providing clear
+   credit to the original author and (b) including a link back to the original
+   repository. You may not distribute, sublicense, sell, or otherwise share
+   the Software in source or binary form for any purpose other than personal,
+   educational, or non-commercial sharing without prior written permission
+   from the copyright holder.
+
+2. COMMERCIAL RESTRICTION: You may not use the Software or any derivative work
+   for commercial purposes — including but not limited to selling, sublicensing,
+   offering it as a product or service, incorporating it into a commercial
+   product, or using it in any revenue-generating context — without explicit
+   written permission from Nolan Stark.
+
+3. PERSONAL & NON-COMMERCIAL SHARING: Permission is granted to use, modify,
+   and share this Software with others for personal, educational, or
+   non-commercial research purposes, provided that this copyright notice and
+   these conditions are retained in all copies or substantial portions of the
+   Software, and that appropriate credit and a link to the original repository
+   are included.
+
+4. ATTRIBUTION: Any permitted use, modification, or redistribution must retain
+   this copyright notice and these conditions in all copies or substantial
+   portions of the Software.
+
+5. MODIFICATIONS: You may modify the Software for personal use. Modified
+   versions may not be distributed or used commercially without explicit
+   written permission from the copyright holder.
+
+To request permission for distribution or commercial use, contact:
+Nolan Stark
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF,
+OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+FILE_END LICENSE 6bf1c7453a82
+
+FILE_START README.md ab1e033d4fa5
+# Code Edith
+
+**Code Edith** (`code-edith`) is a lightweight, terminal-based AI coding assistant. It connects to any AI model that implements the OpenAI-compatible response structure, giving you flexibility over your choice of provider or self-hosted model.
+
+> **Note:** This project is under active development. Features such as tool-calling are not yet available.
+
+---
+
+## Installation
+
+Install directly from GitHub using `pip`:
+
+```bash
+pip install git+https://github.com/sapirrior/code-edith
+```
+
+---
+
+## Configuration
+
+After installation, create a `.env` file in your **home directory** (`~/.env`) and define the following environment variables:
+
+```env
+EDITH_API_KEY=your_api_key
+EDITH_MODEL_NAME=your_model_name
+EDITH_BASE_URL=base_url_for_the_model
+```
+
+| Variable | Description |
+|---|---|
+| `EDITH_API_KEY` | API key for your chosen provider |
+| `EDITH_MODEL_NAME` | Model identifier (e.g. `gpt-4o`, `claude-3-5-sonnet`) |
+| `EDITH_BASE_URL` | Base URL of the OpenAI-compatible endpoint |
+
+---
+
+## Usage
+
+Once configured, launch Edith from any terminal:
+
+```bash
+edith
+```
+
+---
+
+## Reporting Issues
+
+If you encounter a bug or unexpected behavior, please open an issue on the [GitHub repository](https://github.com/sapirrior/code-edith/issues).
+
+---
+
+## License
+This project is licensed under a custom license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
+
+---
+
+***Happy Coding!***
+
+*by Nolan Stark.*
+
+FILE_END README.md ab1e033d4fa5
+
+FILE_START pyproject.toml 3b1d19774fda
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code-edith"
+dynamic = ["version"]
+description = "AI Coding Assistant CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Nolan Stark" }
+]
+keywords = ["cli", "ai", "assistant", "coding", "llm"]
+dependencies = [
+    "rich",
+    "python-dotenv",
+    "openai",
+    "halo",
+    "prompt_toolkit",
+    "pyperclip"
+]
+
+[project.scripts]
+code-edith = "index:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["index"]
+
+[tool.setuptools.dynamic]
+version = { file = "src/config/version.txt" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.json"]
+
+FILE_END pyproject.toml 3b1d19774fda
+
+FILE_START .assets/edith-asi-art.txt 02ddfd464968
+ ▛███▜
+▛█████▜
+ ▘▘ ▝▝
+FILE_END .assets/edith-asi-art.txt 02ddfd464968
+
+FILE_START .assets/edith-asi-unicode.txt dd1759322a25
+\u0020\u259B\u2588\u2588\u2588\u259C
+\u259B\u2588\u2588\u2588\u2588\u2588\u259C
+\u0020\u2598\u2598\u0020\u259D\u259D
+FILE_END .assets/edith-asi-unicode.txt dd1759322a25
+
+FILE_START src/index.py 283a66c5230b
+import os
+import time
+import utils.signals
+from utils.command_handler import handle_command
+from utils.history import add_history, get_history, clear_history
+from engine.chat import make_request
+from engine.client import load_client
+from helper.print_md import print_md
+from helper.input import get_input
+from helper.animation import animation
+from utils.console import console
+from helper.banner import show_banner
+from utils.env import load_home_env, load_env
+
+
+def load_all_envs_one_by_one():
+	
+	api_key = load_env("EDITH_API_KEY")
+	base_url = load_env("EDITH_BASE_URL")
+	model_name = load_env("EDITH_MODEL_NAME")
+	return api_key, base_url, model_name
+
+def main():
+	try:
+		show_banner()
+		api_key, base_url, model_name = load_all_envs_one_by_one()
+		animation(True, "Connecting...")
+		client = load_client(api_key, base_url)
+		animation(False)
+		
+		while True:
+			query = get_input().strip()
+			if not query: continue
+			if query.startswith("/"): handle_command(query); continue
+			add_history("user", query)
+			animation(True, "Thinking...")
+			
+			response = make_request(client, get_history(), model_name)
+			animation(False)
+			print_md(response)
+			add_history("assistant", response)
+			console.print("\n")
+		
+	except EOFError:
+		pass
+	except KeyboardInterrupt:
+		pass
+	finally:
+		animation(False)
+		console.print("[greyx]Goodbye![/greyx]")
+		exit(1)
+FILE_END src/index.py 283a66c5230b
+
+FILE_START src/config/system.txt e0838ee46a59
+You are Edith, a CLI-based coding agent for engineering tasks developed by Nolan Stark.
+
+RULES:
+1. Be concise—answer to the point, no fluff.
+3. Always output in markdown.
+4. Be honest and helpful and formal.
+5. Assume technical competence; skip obvious explanations.
+6. Prioritize actionable guidance over theory.
+7. always write structured Codes.
+FILE_END src/config/system.txt e0838ee46a59
+
+FILE_START src/config/tools.json 14cde8087772
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "web_search",
+      "description": "Search the web for real-time data, current events, or external documentation not in training.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query string."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read_file",
+      "description": "Read and return the full text content of a local file for inspection, analysis, or debugging.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative or absolute path to the file."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "list_dir",
+      "description": "List all files and folders in a directory to explore project structure or verify file existence.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory path to list. Use '.' for current directory."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  }
+]
+
+FILE_END src/config/tools.json 14cde8087772
+
+FILE_START src/config/version.txt d15b20d31f90
+26.0.1
+FILE_END src/config/version.txt d15b20d31f90
+
+FILE_START src/engine/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/engine/__init__.py empty000000
+
+FILE_START src/engine/chat.py eff77661ff3a
+from utils.console import console
+from pathlib import Path
+
+def make_request(client, msgs, model):
+    try:
+        # 1. Get the absolute path to THIS specific file (chat.py)
+        current_file = Path(__file__).resolve()
+        src_dir = current_file.parent.parent
+        path = src_dir / "config" / "system.txt"
+        
+        content = path.read_text().strip()
+        system = [{"role": "system", "content": content}]
+        messages = system + msgs
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            tools=None
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        console.print(f"[Error] Making message request to the model.")
+        exit(1)
+FILE_END src/engine/chat.py eff77661ff3a
+
+FILE_START src/engine/client.py b91fdf4a9b95
+from openai import OpenAI
+from utils.console import console
+
+def load_client(key, url):
+	try:
+		client = OpenAI(api_key=key,base_url=url)
+		client.models.list() # do a tiny test without losing tokens
+		return client
+	except Exception as e:
+		console.print("[Error] connecting with server.")
+		exit(1)
+FILE_END src/engine/client.py b91fdf4a9b95
+
+FILE_START src/helper/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/helper/__init__.py empty000000
+
+FILE_START src/helper/animation.py ba8d5a06dffa
+import sys
+from halo import Halo
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+# Global instance initialization
+_sp = Halo(
+    spinner={
+        "interval": 200,
+        "frames": [f"{ORANGEX}{c}{RESET}" for c in "✲✱❖"]
+    }
+)
+
+def animation(run: bool, text="Reasoning..."):
+    """
+    run: True to start/update, False to stop.
+    text: The message to display in Greyx.
+    """
+    if run:
+        # Update text dynamically (works even if already spinning)
+        _sp.text = f"{GREYX}{text}{RESET}"
+        _sp.start()
+    else:
+        # Stop the Halo spinner
+        _sp.stop()
+        
+        # The Fix: Move cursor to start (\r) and erase the entire line (\033[K)
+        # This gives print_md a completely blank canvas.
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+FILE_END src/helper/animation.py ba8d5a06dffa
+
+FILE_START src/helper/banner.py 2799d61f7a6a
+import os
+from rich.panel import Panel
+from rich.align import Align
+from utils.console import console
+
+folder_name = os.path.basename(os.getcwd()) # Reads current folder name
+content = f"""
+[resetx]Welcome to Code Edith![/resetx]
+[orangex] ▛███▜[/orangex]
+[orangex]▛█████▜[/orangex]
+[orangex] ▘▘ ▝▝[/orangex]
+[greyx]Folder: {folder_name}[/greyx]
+[greyx]Tip: /help for information[/greyx]
+"""
+
+def show_banner():
+	try: # try/except block
+		console.clear()
+		banner_panel = Panel( # Initializes the panel
+			Align.left(content.strip()),
+			border_style = "orangex",
+			width = console.size.width - 2, # terminal-size - 2
+			title_align = "left",
+			title = "[bold orangex]Code Edith[/bold orangex]",
+			padding = (1, 1) # adds padding
+			)
+		console.print(banner_panel)
+	except Exception as e: # Error handle
+		console.print("[Error] Loading banner.") # Error message
+		exit(1)
+FILE_END src/helper/banner.py 2799d61f7a6a
+
+FILE_START src/helper/input.py 67a53d58d6e7
+from prompt_toolkit import prompt
+from prompt_toolkit.styles import Style
+
+# Minimalist Style: Just Orangex for the symbol
+style = Style.from_dict({
+    'symbol': '#d97757',
+    '': '#a0a0a0'
+})
+
+def get_input():
+    # The symbol is 3 characters: ">", ">", " "
+    message = [('class:symbol', '>> ')]
+
+    # Continuation creates the indent for wrapped lines (3 spaces)
+    def continuation(width, line_number, is_soft_wrap):
+        return [('class:symbol', '   ')]
+
+    return prompt(
+        message,
+        style=style,
+        prompt_continuation=continuation,
+        wrap_lines=True
+    ).strip()
+FILE_END src/helper/input.py 67a53d58d6e7
+
+FILE_START src/helper/print_md.py 6997f5225ee4
+from utils.console import console
+from rich.markdown import Markdown
+from rich.padding import Padding
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+def print_md(text):
+	try:
+		txt_md = Markdown(text.strip())
+		padded_md = Padding(txt_md, (0, 2, 0, 3))
+		console.print(padded_md)
+	except Exception as e:
+		console.print("[Error] prompt request.")
+		exit(1)
+FILE_END src/helper/print_md.py 6997f5225ee4
+
+FILE_START src/utils/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/utils/__init__.py empty000000
+
+FILE_START src/utils/command_handler.py a2f8b09ae690
+import os
+import sys
+import shutil
+from helper.banner import show_banner
+from utils.history import clear_history
+from utils.console import console
+
+def handle_command(query):
+    parts = query[1:].lower().split()
+    cmd = parts[0] if parts else ""
+
+    if cmd == "clear":
+    	console.width = shutil.get_terminal_size().columns - 2
+    	show_banner()
+        
+    elif cmd == "reset":
+        clear_history()
+        console.print("[orangex]  History reset. Memory wiped.[/orangex]\n")
+    
+    elif cmd == "exit":
+        sys.exit(0)
+
+    elif cmd == "help":
+        console.print("[orangex]Edith Commands:[/orangex]")
+        console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
+        console.print("[greyx]/reset[/greyx] - Wipe conversation history")
+        console.print("[greyx]/exit [/greyx] - Stop Edith safely")
+        console.print("[greyx]/help [/greyx] - Show this menu\n")
+    
+    else:
+        console.print(f"[orangex]Unknown command:[/orangex][greyx]/{cmd}[/greyx]\n")
+
+FILE_END src/utils/command_handler.py a2f8b09ae690
+
+FILE_START src/utils/console.py 0b5b2b8b9710
+import shutil
+from rich.console import Console
+from rich.theme import Theme
+from rich.markdown import Markdown
+
+theme_custom = Theme({ # Adds custom themes
+    "orangex": "rgb(217,119,87)", # orange color
+    "greyx": "rgb(128,128,128)", # grey color
+    "resetx": "default" # white color
+})
+
+try:
+	console = Console(theme=theme_custom) # installs console with custom themes
+	console.width = shutil.get_terminal_size().columns - 2 # sets width
+except Exception as e:
+	console.print("[Error] Starting the console.")
+	exit(1) # exits if error occurs
+FILE_END src/utils/console.py 0b5b2b8b9710
+
+FILE_START src/utils/env.py f1903712faa5
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+from utils.console import console
+
+def load_home_env():
+	try:
+		home_path = Path.home() / ".env"
+		
+		if home_path.exists():
+			load_dotenv(dotenv_path=home_path)
+	except Exception as e:
+		console.print("[Error] Loading environmental variables.")
+		exit(1)
+
+load_home_env()
+
+def load_env(var):
+		val = os.environ.get(var)
+		if val is None:
+			console.print(f"[Error] Loading {var} environmental variable.")
+			exit(1)
+		else:
+			return val
+FILE_END src/utils/env.py f1903712faa5
+
+FILE_START src/utils/history.py 74aad4a51707
+chat_history = []
+
+def add_history(role, content):
+	chat_history.append({"role": role, "content": content})
+
+def get_history():
+	return chat_history
+
+def clear_history():
+	global chat_history
+	chat_history = []
+FILE_END src/utils/history.py 74aad4a51707
+
+FILE_START src/utils/signals.py ebf63381cdbb
+import signal
+
+_UNCATCHABLE = {signal.SIGKILL, signal.SIGSTOP}
+
+for sig in signal.valid_signals() - _UNCATCHABLE:
+    try:
+        signal.signal(sig, signal.SIG_IGN)
+    except (ValueError, OSError, RuntimeError):
+        continue
+FILE_END src/utils/signals.py ebf63381cdbb
+
