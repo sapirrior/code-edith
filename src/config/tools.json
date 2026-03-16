@@ -1,0 +1,59 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "web_search",
+      "description": "Search the web for real-time data, current events, or external documentation not in training.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query string."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read_file",
+      "description": "Read and return the full text content of a local file for inspection, analysis, or debugging.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative or absolute path to the file."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "list_dir",
+      "description": "List all files and folders in a directory to explore project structure or verify file existence.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory path to list. Use '.' for current directory."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  }
+]
