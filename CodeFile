@@ -1,0 +1,680 @@
+ROOT_NAME code-edith
+CREATED_UTC 2026-03-15T14:52:14Z
+TOTAL_SIZE_MB 0.02
+
+START_STRUCTURE
+code-edith/
+|-- .assets/
+|   |-- edith-asi-art.txt
+|   \-- edith-asi-unicode.txt
+|-- src/
+|   |-- __pycache__/
+|   |   \-- index.cpython-312.pyc
+|   |-- config/
+|   |   |-- system.txt
+|   |   \-- version.txt
+|   |-- edith.egg-info/
+|   |   |-- PKG-INFO
+|   |   |-- SOURCES.txt
+|   |   |-- dependency_links.txt
+|   |   |-- entry_points.txt
+|   |   |-- requires.txt
+|   |   \-- top_level.txt
+|   |-- engine/
+|   |   |-- __pycache__/
+|   |   |   |-- chat.cpython-312.pyc
+|   |   |   \-- client.cpython-312.pyc
+|   |   |-- __init__.py
+|   |   |-- chat.py
+|   |   \-- client.py
+|   |-- helper/
+|   |   |-- __pycache__/
+|   |   |   |-- animation.cpython-312.pyc
+|   |   |   |-- banner.cpython-312.pyc
+|   |   |   |-- input.cpython-312.pyc
+|   |   |   \-- print_md.cpython-312.pyc
+|   |   |-- __init__.py
+|   |   |-- animation.py
+|   |   |-- banner.py
+|   |   |-- input.py
+|   |   \-- print_md.py
+|   |-- utils/
+|   |   |-- __pycache__/
+|   |   |   |-- command_handler.cpython-312.pyc
+|   |   |   |-- console.cpython-312.pyc
+|   |   |   |-- env.cpython-312.pyc
+|   |   |   |-- history.cpython-312.pyc
+|   |   |   \-- signals.cpython-312.pyc
+|   |   |-- __init__.py
+|   |   |-- command_handler.py
+|   |   |-- console.py
+|   |   |-- env.py
+|   |   |-- history.py
+|   |   \-- signals.py
+|   |-- index.py
+|   \-- test.json
+\-- pyproject.toml
+END_STRUCTURE
+
+FILE_START pyproject.toml e262f62b8b5b
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edith"
+dynamic = ["version"]
+description = "AI Coding Assistant CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Nolan Stark" }
+]
+keywords = ["cli", "ai", "assistant", "coding", "llm"]
+dependencies = [
+    "rich",
+    "python-dotenv",
+    "openai",
+    "halo",
+    "prompt_toolkit",
+]
+
+[project.scripts]
+edith = "index:main"
+
+[tool.setuptools.dynamic]
+version = { file = "src/config/version.txt" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.json"]
+
+FILE_END pyproject.toml e262f62b8b5b
+
+FILE_START .assets/edith-asi-art.txt 02ddfd464968
+ ▛███▜
+▛█████▜
+ ▘▘ ▝▝
+FILE_END .assets/edith-asi-art.txt 02ddfd464968
+
+FILE_START .assets/edith-asi-unicode.txt dd1759322a25
+\u0020\u259B\u2588\u2588\u2588\u259C
+\u259B\u2588\u2588\u2588\u2588\u2588\u259C
+\u0020\u2598\u2598\u0020\u259D\u259D
+FILE_END .assets/edith-asi-unicode.txt dd1759322a25
+
+FILE_START src/index.py 283a66c5230b
+import os
+import time
+import utils.signals
+from utils.command_handler import handle_command
+from utils.history import add_history, get_history, clear_history
+from engine.chat import make_request
+from engine.client import load_client
+from helper.print_md import print_md
+from helper.input import get_input
+from helper.animation import animation
+from utils.console import console
+from helper.banner import show_banner
+from utils.env import load_home_env, load_env
+
+
+def load_all_envs_one_by_one():
+	
+	api_key = load_env("EDITH_API_KEY")
+	base_url = load_env("EDITH_BASE_URL")
+	model_name = load_env("EDITH_MODEL_NAME")
+	return api_key, base_url, model_name
+
+def main():
+	try:
+		show_banner()
+		api_key, base_url, model_name = load_all_envs_one_by_one()
+		animation(True, "Connecting...")
+		client = load_client(api_key, base_url)
+		animation(False)
+		
+		while True:
+			query = get_input().strip()
+			if not query: continue
+			if query.startswith("/"): handle_command(query); continue
+			add_history("user", query)
+			animation(True, "Thinking...")
+			
+			response = make_request(client, get_history(), model_name)
+			animation(False)
+			print_md(response)
+			add_history("assistant", response)
+			console.print("\n")
+		
+	except EOFError:
+		pass
+	except KeyboardInterrupt:
+		pass
+	finally:
+		animation(False)
+		console.print("[greyx]Goodbye![/greyx]")
+		exit(1)
+FILE_END src/index.py 283a66c5230b
+
+FILE_START src/test.json d6453223c823
+{
+  "base_url": "https://mockgpt.wiremockapi.cloud/v1",
+  "model": "gpt-3.5-turbo",
+  "api_key": "sk-test"
+}
+
+FILE_END src/test.json d6453223c823
+
+FILE_START src/config/system.txt e0838ee46a59
+You are Edith, a CLI-based coding agent for engineering tasks developed by Nolan Stark.
+
+RULES:
+1. Be concise—answer to the point, no fluff.
+3. Always output in markdown.
+4. Be honest and helpful and formal.
+5. Assume technical competence; skip obvious explanations.
+6. Prioritize actionable guidance over theory.
+7. always write structured Codes.
+FILE_END src/config/system.txt e0838ee46a59
+
+FILE_START src/config/version.txt 92521fc3cbd9
+1.0.0
+FILE_END src/config/version.txt 92521fc3cbd9
+
+FILE_START src/helper/banner.py 2799d61f7a6a
+import os
+from rich.panel import Panel
+from rich.align import Align
+from utils.console import console
+
+folder_name = os.path.basename(os.getcwd()) # Reads current folder name
+content = f"""
+[resetx]Welcome to Code Edith![/resetx]
+[orangex] ▛███▜[/orangex]
+[orangex]▛█████▜[/orangex]
+[orangex] ▘▘ ▝▝[/orangex]
+[greyx]Folder: {folder_name}[/greyx]
+[greyx]Tip: /help for information[/greyx]
+"""
+
+def show_banner():
+	try: # try/except block
+		console.clear()
+		banner_panel = Panel( # Initializes the panel
+			Align.left(content.strip()),
+			border_style = "orangex",
+			width = console.size.width - 2, # terminal-size - 2
+			title_align = "left",
+			title = "[bold orangex]Code Edith[/bold orangex]",
+			padding = (1, 1) # adds padding
+			)
+		console.print(banner_panel)
+	except Exception as e: # Error handle
+		console.print("[Error] Loading banner.") # Error message
+		exit(1)
+FILE_END src/helper/banner.py 2799d61f7a6a
+
+FILE_START src/helper/animation.py ba8d5a06dffa
+import sys
+from halo import Halo
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+# Global instance initialization
+_sp = Halo(
+    spinner={
+        "interval": 200,
+        "frames": [f"{ORANGEX}{c}{RESET}" for c in "✲✱❖"]
+    }
+)
+
+def animation(run: bool, text="Reasoning..."):
+    """
+    run: True to start/update, False to stop.
+    text: The message to display in Greyx.
+    """
+    if run:
+        # Update text dynamically (works even if already spinning)
+        _sp.text = f"{GREYX}{text}{RESET}"
+        _sp.start()
+    else:
+        # Stop the Halo spinner
+        _sp.stop()
+        
+        # The Fix: Move cursor to start (\r) and erase the entire line (\033[K)
+        # This gives print_md a completely blank canvas.
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+FILE_END src/helper/animation.py ba8d5a06dffa
+
+FILE_START src/helper/input.py 67a53d58d6e7
+from prompt_toolkit import prompt
+from prompt_toolkit.styles import Style
+
+# Minimalist Style: Just Orangex for the symbol
+style = Style.from_dict({
+    'symbol': '#d97757',
+    '': '#a0a0a0'
+})
+
+def get_input():
+    # The symbol is 3 characters: ">", ">", " "
+    message = [('class:symbol', '>> ')]
+
+    # Continuation creates the indent for wrapped lines (3 spaces)
+    def continuation(width, line_number, is_soft_wrap):
+        return [('class:symbol', '   ')]
+
+    return prompt(
+        message,
+        style=style,
+        prompt_continuation=continuation,
+        wrap_lines=True
+    ).strip()
+FILE_END src/helper/input.py 67a53d58d6e7
+
+FILE_START src/helper/print_md.py 6997f5225ee4
+from utils.console import console
+from rich.markdown import Markdown
+from rich.padding import Padding
+
+# Brand Colors
+ORANGEX = "\033[38;2;217;119;87m"
+GREYX = "\033[38;2;153;153;153m"
+RESET = "\033[0m"
+
+def print_md(text):
+	try:
+		txt_md = Markdown(text.strip())
+		padded_md = Padding(txt_md, (0, 2, 0, 3))
+		console.print(padded_md)
+	except Exception as e:
+		console.print("[Error] prompt request.")
+		exit(1)
+FILE_END src/helper/print_md.py 6997f5225ee4
+
+FILE_START src/helper/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/helper/__init__.py e3b0c44298fc
+
+FILE_START src/helper/__pycache__/print_md.cpython-312.pyc 90785ff07adf
+�
+    瞶i�  �                   �:   � d dl mZ d dlmZ d dlmZ dZdZdZd� Z	y)	�    )�console)�Markdown)�Paddingz[38;2;217;119;87mz[38;2;153;153;153mz[0mc                 ��   � 	 t        | j                  �       �      }t        |d�      }t        j                  |�       y # t
+        $ r*}t        j                  d�       t        d�       Y d }~y d }~ww xY w)N)r   �   r   �   z[Error] prompt request.�   )r   �stripr   r   �print�	Exception�exit)�text�txt_md�	padded_md�es       �@/storage/self/primary/projects/code-edith/src/helper/print_md.py�print_mdr   
+   sU   � �
+��D�J�J�L�!�&��f�l�+�)�	�-�-�	���� 
+�	�-�-�)�*��q�'�'��
+�s   �:= �	A0� A+�+A0N)
+�utils.consoler   �rich.markdownr   �rich.paddingr   �ORANGEX�GREYX�RESETr   � �    r   �<module>r      s$   �� !� "�  � "�� ����
+r   
+FILE_END src/helper/__pycache__/print_md.cpython-312.pyc 90785ff07adf
+
+FILE_START src/helper/__pycache__/input.cpython-312.pyc 3388887d098e
+�
+    ���i[  �                   �L   � d dl mZ d dlmZ  ej                  ddd��      Zd� Zy)�    )�prompt)�Stylez#d97757z#a0a0a0)�symbol� c                  �P   � dg} d� }t        | t        |d��      j                  �       S )N)�class:symbolz>> c                 �   � dgS )N)r   z   � )�width�line_number�is_soft_wraps      �=/storage/self/primary/projects/code-edith/src/helper/input.py�continuationzget_input.<locals>.continuation   s   � �'�(�(�    T)�style�prompt_continuation�
+wrap_lines)r   r   �strip)�messager   s     r   �	get_inputr   
+   s3   � �&�'�G�)� ���(��	�
+ �e�g�r   N)�prompt_toolkitr   �prompt_toolkit.stylesr   �	from_dictr   r   r
+   r   r   �<module>r      s-   �� !� '� 	������� 	��
+r   
+FILE_END src/helper/__pycache__/input.cpython-312.pyc 3388887d098e
+
+FILE_START src/helper/__pycache__/animation.cpython-312.pyc cb091432f3e7
+�
+    yy�iX  �            	       �|   � d dl Z d dlmZ dZdZdZ eddD � cg c]
+  } e� | � e� ��� c} d��	�      Zdd
+efd�Zyc c} w )�    N)�Haloz[38;2;217;119;87mz[38;2;153;153;153mz[0m��   u	   ✲✱❖)�interval�frames)�spinner�runc                 �  � | r.t         � |� t        � �t        _        t        j	                  �        yt        j                  �        t        j                  j                  d�       t        j                  j                  �        y)z^
+    run: True to start/update, False to stop.
+    text: The message to display in Greyx.
+    z[KN)
+�GREYX�RESET�_sp�text�start�stop�sys�stdout�write�flush)r   r   s     �A/storage/self/primary/projects/code-edith/src/helper/animation.py�	animationr      sS   � �
+ ��W�T�F�5�'�*����	�	�� 	���
+� 	�
+�
+����$��
+�
+����    )zReasoning...)	r   �halor   �ORANGEXr
+   r   r   �boolr   )�cs   0r   �<module>r      sa   �� 
+� � "�� ���� ��3>�?�;�a�g�Y�q�c�%��)�;�?�����4� ��	 @s   �9
+
+FILE_END src/helper/__pycache__/animation.cpython-312.pyc cb091432f3e7
+
+FILE_START src/helper/__pycache__/banner.cpython-312.pyc 9ed2ce6a5896
+�
+    �i�  �                   �   � d dl Z d dlmZ d dlmZ d dlmZ e j                  j                   e j                  �       �      Z
+de
+� d�Zd� Zy)�    N)�Panel)�Align)�consoleu�   
+[resetx]Welcome to Code Edith![/resetx]
+[orangex] ▛███▜[/orangex]
+[orangex]▛█████▜[/orangex]
+[orangex] ▘▘ ▝▝[/orangex]
+[greyx]Folder: z3[/greyx]
+[greyx]Tip: /help for information[/greyx]
+c                  �f  � 	 t        j                  �        t        t        j                  t
+        j                  �       �      dt         j                  j                  dz
+  ddd��      } t        j                  | �       y # t        $ r*}t        j                  d�       t        d�       Y d }~y d }~ww xY w)	N�orangex�   �leftz'[bold orangex]Code Edith[/bold orangex])�   r
+   )�border_style�width�title_align�title�paddingz[Error] Loading banner.r
+   )r   �clearr   r   r	   �content�strip�sizer   �print�	Exception�exit)�banner_panel�es     �>/storage/self/primary/projects/code-edith/src/helper/banner.py�show_bannerr      s~   � �
+�	�-�-�/���:�:�g�m�m�o����<�<����!��4���,� 
+�-�-����� 
+�	�-�-�)�*��q�'�'��
+�s   �A:A= �=	B0� B+�+B0)�os�
+rich.panelr   �
+rich.alignr   �utils.consoler   �path�basename�getcwd�folder_namer   r   � �    r   �<module>r%      sJ   �� 	� � � !��g�g���y�r�y�y�{�+���
+ �}� ���
+r$   
+FILE_END src/helper/__pycache__/banner.cpython-312.pyc 9ed2ce6a5896
+
+FILE_START src/utils/env.py f1903712faa5
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+from utils.console import console
+
+def load_home_env():
+	try:
+		home_path = Path.home() / ".env"
+		
+		if home_path.exists():
+			load_dotenv(dotenv_path=home_path)
+	except Exception as e:
+		console.print("[Error] Loading environmental variables.")
+		exit(1)
+
+load_home_env()
+
+def load_env(var):
+		val = os.environ.get(var)
+		if val is None:
+			console.print(f"[Error] Loading {var} environmental variable.")
+			exit(1)
+		else:
+			return val
+FILE_END src/utils/env.py f1903712faa5
+
+FILE_START src/utils/console.py eedfecaae05a
+from rich.console import Console
+from rich.theme import Theme
+from rich.markdown import Markdown
+
+theme_custom = Theme({ # Adds custom themes
+    "orangex": "rgb(217,119,87)", # orange color
+    "greyx": "rgb(128,128,128)", # grey color
+    "resetx": "default" # white color
+})
+
+try:
+	console = Console(theme=theme_custom) # installs console with custom themes
+	console.width = console.size.width # sets width
+except Exception as e:
+	console.print("[Error] Starting the console.")
+	exit(1) # exits if error occurs
+FILE_END src/utils/console.py eedfecaae05a
+
+FILE_START src/utils/history.py 74aad4a51707
+chat_history = []
+
+def add_history(role, content):
+	chat_history.append({"role": role, "content": content})
+
+def get_history():
+	return chat_history
+
+def clear_history():
+	global chat_history
+	chat_history = []
+FILE_END src/utils/history.py 74aad4a51707
+
+FILE_START src/utils/signals.py ebf63381cdbb
+import signal
+
+_UNCATCHABLE = {signal.SIGKILL, signal.SIGSTOP}
+
+for sig in signal.valid_signals() - _UNCATCHABLE:
+    try:
+        signal.signal(sig, signal.SIG_IGN)
+    except (ValueError, OSError, RuntimeError):
+        continue
+FILE_END src/utils/signals.py ebf63381cdbb
+
+FILE_START src/utils/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/utils/__init__.py e3b0c44298fc
+
+FILE_START src/utils/command_handler.py 5bc6aa08c59d
+import os
+import sys
+from helper.banner import show_banner
+from utils.history import clear_history
+from utils.console import console
+
+def handle_command(query):
+    parts = query[1:].lower().split()
+    cmd = parts[0] if parts else ""
+
+    if cmd == "clear":
+    	show_banner()
+        
+    elif cmd == "reset":
+        clear_history()
+        console.print("[orangex]  History reset. Memory wiped.[/orangex]\n")
+    
+    elif cmd == "exit":
+        sys.exit(0)
+
+    elif cmd == "help":
+        console.print("\n[orangex]Edith Commands:[/orangex]")
+        console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
+        console.print("[greyx]/reset[/greyx] - Wipe conversation history")
+        console.print("[greyx]/exit [/greyx] - Stop Edith safely")
+        console.print("[greyx]/help [/greyx] - Show this menu\n")
+    
+    else:
+        console.print(f"[orangex]Unknown command:[/orangex][greyx]/{cmd}[/greyx]\n")
+
+FILE_END src/utils/command_handler.py 5bc6aa08c59d
+
+FILE_START src/utils/__pycache__/console.cpython-312.pyc 3469c546a7d8
+�
+    ��i  �                   ��   � d dl mZ d dlmZ d dlmZ  edddd��      Z	  ee��      Zej                  j                  e_	        y# e
+$ r#Zej                  d	�        ed
+�       Y dZ[ydZ[ww xY w)�    )�Console)�Theme)�Markdownzrgb(217,119,87)zrgb(128,128,128)�default)�orangex�greyx�resetx)�themez[Error] Starting the console.�   N)�rich.consoler   �
+rich.themer   �rich.markdownr   �theme_custom�console�size�width�	Exception�e�print�exit� �    �>/storage/self/primary/projects/code-edith/src/utils/console.py�<module>r      sl   ��  � � "�� ���� ��	���&�����#�#����� 	����.�/��a����	�s   �$A �A-�
+A(�(A-
+FILE_END src/utils/__pycache__/console.cpython-312.pyc 3469c546a7d8
+
+FILE_START src/utils/__pycache__/env.cpython-312.pyc 45a8cc1dc2d9
+�
+    ��i�  �                   �J   � d dl Z d dlmZ d dlmZ d dlmZ d� Z e�        d� Zy)�    N)�Path)�load_dotenv)�consolec                  ��   � 	 t        j                  �       dz  } | j                  �       rt        | ��       y y # t        $ r*}t        j                  d�       t        d�       Y d }~y d }~ww xY w)Nz.env)�dotenv_pathz([Error] Loading environmental variables.�   )r   �home�existsr   �	Exceptionr   �print�exit)�	home_path�es     �:/storage/self/primary/projects/code-edith/src/utils/env.py�load_home_envr      sV   � �
+��i�i�k�F�"�)������9�%� ��� 
+�	�-�-�:�;��q�'�'��
+�s   �37 �	A*�  A%�%A*c                 �   � t         j                  j                  | �      }|�%t        j                  d| � d��       t        d�       y |S )Nz[Error] Loading z environmental variable.r   )�os�environ�getr   r   r   )�var�vals     r   �load_envr      s<   � �
+�
+�
+���s��#��[�
+�=�=�#�C�5�(@�A�B���7�
+�:�    )	r   �pathlibr   �dotenvr   �utils.consoler   r   r   � r   r   �<module>r      s"   �� 	� � � !�
+� ��r   
+FILE_END src/utils/__pycache__/env.cpython-312.pyc 45a8cc1dc2d9
+
+FILE_START src/utils/__pycache__/history.cpython-312.pyc 631d3157665c
+�
+    e�i�   �                   �   � g a d � Zd� Zd� Zy)c                 �4   � t         j                  | |d��       y )N��role�content)�chat_history�appendr   s     �>/storage/self/primary/projects/code-edith/src/utils/history.py�add_historyr	      s   � ����d�w�7�8�    c                  �   � t         S �N�r   � r
+   r   �get_historyr      s   � ��r
+   c                  �   � g a y r   r   r   r
+   r   �clear_historyr   	   s   � ��r
+   N)r   r	   r   r   r   r
+   r   �<module>r      s   ����9��r
+   
+FILE_END src/utils/__pycache__/history.cpython-312.pyc 631d3157665c
+
+FILE_START src/utils/__pycache__/signals.cpython-312.pyc f0b6da0f22cf
+�
+    ⬶i�   �                   ��   � d dl Z e j                  e j                  hZ e j                  �       ez
+  D ]   Z	  e j                   ee j                  �       �" y# eee	f$ r Y �.w xY w)�    N)
+�signal�SIGKILL�SIGSTOP�_UNCATCHABLE�valid_signals�sig�SIG_IGN�
+ValueError�OSError�RuntimeError� �    �>/storage/self/primary/projects/code-edith/src/utils/signals.py�<module>r      sh   �� �������/���6���!�L�0�C������c�6�>�>�*� 1�� ���.� ���s   �A�A �A 
+FILE_END src/utils/__pycache__/signals.cpython-312.pyc f0b6da0f22cf
+
+FILE_START src/utils/__pycache__/command_handler.cpython-312.pyc e88df97aa854
+�
+    ���i�  �                   �>   � d dl Z d dlZd dlmZ d dlmZ d dlmZ d� Zy)�    N)�show_banner)�clear_history)�consolec                 �  � | dd  j                  �       j                  �       }|r|d   nd}|dk(  rt        �        y |dk(  r t        �        t	        j
+                  d�       y |dk(  rt        j                  d�       y |dk(  rjt	        j
+                  d	�       t	        j
+                  d
+�       t	        j
+                  d�       t	        j
+                  d�       t	        j
+                  d�       y t	        j
+                  d|� d��       y )N�   r   � �clear�resetz2[orangex]  History reset. Memory wiped.[/orangex]
+�exit�helpz#
+[orangex]Edith Commands:[/orangex]z1[greyx]/clear[/greyx] - Clear the terminal screenz1[greyx]/reset[/greyx] - Wipe conversation historyz)[greyx]/exit [/greyx] - Stop Edith safelyz'[greyx]/help [/greyx] - Show this menu
+z+[orangex]Unknown command:[/orangex][greyx]/z	[/greyx]
+)�lower�splitr   r   r   �print�sysr   )�query�parts�cmds      �F/storage/self/primary/projects/code-edith/src/utils/command_handler.py�handle_commandr      s�   � ��!�"�I�O�O��#�#�%�E��%��(��C�
+�g�~��]�	��������K�L�	��������	������<�=����I�J����I�J����A�B����@�A� 	���C�C�5�
+�S�T�    )	�osr   �helper.bannerr   �utils.historyr   �utils.consoler   r   � r   r   �<module>r      s   �� 	� 
+� %� '� !�Ur   
+FILE_END src/utils/__pycache__/command_handler.cpython-312.pyc e88df97aa854
+
+FILE_START src/edith.egg-info/entry_points.txt a99d087c77bc
+[console_scripts]
+edith = index:main
+
+FILE_END src/edith.egg-info/entry_points.txt a99d087c77bc
+
+FILE_START src/edith.egg-info/PKG-INFO ebbda627e884
+Metadata-Version: 2.4
+Name: edith
+Version: 0.1.0
+Summary: AI Coding Assistant CLI
+Requires-Dist: rich
+Requires-Dist: python-dotenv
+Requires-Dist: openai
+
+FILE_END src/edith.egg-info/PKG-INFO ebbda627e884
+
+FILE_START src/edith.egg-info/dependency_links.txt 01ba4719c80b
+
+
+FILE_END src/edith.egg-info/dependency_links.txt 01ba4719c80b
+
+FILE_START src/edith.egg-info/requires.txt 9911a322230d
+rich
+python-dotenv
+openai
+
+FILE_END src/edith.egg-info/requires.txt 9911a322230d
+
+FILE_START src/edith.egg-info/top_level.txt eb7bf220495a
+config
+helper
+utils
+
+FILE_END src/edith.egg-info/top_level.txt eb7bf220495a
+
+FILE_START src/edith.egg-info/SOURCES.txt 2a226b7e5c35
+pyproject.toml
+src/edith.egg-info/PKG-INFO
+src/edith.egg-info/SOURCES.txt
+src/edith.egg-info/dependency_links.txt
+src/edith.egg-info/entry_points.txt
+src/edith.egg-info/requires.txt
+src/edith.egg-info/top_level.txt
+src/helper/banner.py
+src/utils/console.py
+src/utils/env.py
+FILE_END src/edith.egg-info/SOURCES.txt 2a226b7e5c35
+
+FILE_START src/__pycache__/index.cpython-312.pyc 108650e244fc
+�
+    �iN  �                   �   � d dl Z d dlZd dlZd dlmZ d dlmZmZm	Z	 d dl
+mZ d dlmZ d dlmZ d dlmZ d dlmZ d d	lmZ d d
+lmZ d dlmZmZ d� Zd� Zy)�    N)�handle_command)�add_history�get_history�clear_history)�make_request)�load_client)�print_md)�	get_input)�	animation)�console)�show_banner)�load_home_env�load_envc                  �N   � t        d�      } t        d�      }t        d�      }| ||fS )N�EDITH_API_KEY�EDITH_BASE_URL�EDITH_MODEL_NAME)r   )�api_key�base_url�
+model_names      �6/storage/self/primary/projects/code-edith/src/index.py�load_all_envs_one_by_oner      s/   � ��O�$���%�&���)�*����:�%�%�    c                  �  � 	 t        �        t        �       \  } }}t        dd�       t        | |�      }t        d�       	 t	        �       j                  �       }|s�|j                  d�      rt        |�       �9t        d|�       t        dd�       t        |t        �       |�      }t        d�       t        |�       t        d|�       t        j                  d�       ��# t        $ r Y nt        $ r Y nw xY wt        d�       t        j                  d	�       t!        d
+�       y # t        d�       t        j                  d	�       t!        d
+�       w xY w)NTzConnecting...F�/�userzThinking...�	assistant�
+z[greyx]Goodbye![/greyx]�   )r   r   r   r   r
+   �strip�
+startswithr   r   r   r   r	   r   �print�EOFError�KeyboardInterrupt�exit)r   r   r   �client�query�responses         r   �mainr)      s  � �
+��-�":�"<��'�8�Z��D�/�"��w��)�&��E����;����5�
+�����s��^�E�2�H��v�u���T�=�!��6�;�=�*�=�8��U���H���{�H�%�
+�=�=��� 	�� 	� ��� ���� �E��	�-�-�)�*��q�'�� �E��	�-�-�)�*��q�'�s0   �CC �	C1�$D  �&C1�.D  �0C1�1D  � -E)�os�time�utils.signals�utils�utils.command_handlerr   �utils.historyr   r   r   �engine.chatr   �engine.clientr   �helper.print_mdr	   �helper.inputr
+   �helper.animationr   �utils.consoler   �helper.bannerr   �	utils.envr   r   r   r)   � r   r   �<module>r9      s9   �� 	� � � 0� A� A� $� %� $� "� &� !� %� -�&�
+r   
+FILE_END src/__pycache__/index.cpython-312.pyc 108650e244fc
+
+FILE_START src/engine/client.py b91fdf4a9b95
+from openai import OpenAI
+from utils.console import console
+
+def load_client(key, url):
+	try:
+		client = OpenAI(api_key=key,base_url=url)
+		client.models.list() # do a tiny test without losing tokens
+		return client
+	except Exception as e:
+		console.print("[Error] connecting with server.")
+		exit(1)
+FILE_END src/engine/client.py b91fdf4a9b95
+
+FILE_START src/engine/chat.py eff77661ff3a
+from utils.console import console
+from pathlib import Path
+
+def make_request(client, msgs, model):
+    try:
+        # 1. Get the absolute path to THIS specific file (chat.py)
+        current_file = Path(__file__).resolve()
+        src_dir = current_file.parent.parent
+        path = src_dir / "config" / "system.txt"
+        
+        content = path.read_text().strip()
+        system = [{"role": "system", "content": content}]
+        messages = system + msgs
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            tools=None
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        console.print(f"[Error] Making message request to the model.")
+        exit(1)
+FILE_END src/engine/chat.py eff77661ff3a
+
+FILE_START src/engine/__init__.py e3b0c44298fc
+EMPTY
+FILE_END src/engine/__init__.py e3b0c44298fc
+
+FILE_START src/engine/__pycache__/client.cpython-312.pyc aef0b7ff4b72
+�
+    ��i,  �                   �"   � d dl mZ d dlmZ d� Zy)�    )�OpenAI)�consolec                 ��   � 	 t        | |��      }|j                  j                  �        |S # t        $ r*}t	        j
+                  d�       t        d�       Y d }~y d }~ww xY w)N)�api_key�base_urlz[Error] connecting with server.�   )r   �models�list�	Exceptionr   �print�exit)�key�url�client�es       �>/storage/self/primary/projects/code-edith/src/engine/client.py�load_clientr      sN   � �
+��#�s�+�&��-�-����	�-��� 
+�	�-�-�1�2��q�'�'��
+�s   �(+ �	A� A�AN)�openair   �utils.consoler   r   � �    r   �<module>r      s   �� � !�
+r   
+FILE_END src/engine/__pycache__/client.cpython-312.pyc aef0b7ff4b72
+
+FILE_START src/engine/__pycache__/chat.cpython-312.pyc 00a8f101b68c
+�
+    ٟ�i  �                   �"   � d dl mZ d dlmZ d� Zy)�    )�console)�Pathc                 ��  � 	 t        t        �      j                  �       }|j                  j                  }|dz  dz  }|j	                  �       j                  �       }d|d�g}||z   }| j                  j                  j                  ||d ��      }	|	j                  d   j                  j                  S # t        $ r*}
+t        j                  d�       t        d�       Y d }
+~
+y d }
+~
+ww xY w)	N�configz
+system.txt�system)�role�content)�model�messages�toolsr   z,[Error] Making message request to the model.�   )r   �__file__�resolve�parent�	read_text�strip�chat�completions�create�choices�messager	   �	Exceptionr   �print�exit)�client�msgsr
+   �current_file�src_dir�pathr	   r   r   �response�es              �</storage/self/primary/projects/code-edith/src/engine/chat.py�make_requestr#      s�   � ���H�~�-�-�/���%�%�,�,����!�L�0���.�.�"�(�(�*��#��8�9���D�=���;�;�*�*�1�1���� 2� 
+��
+ ����"�*�*�2�2�2��� ����D�F��Q�����s   �B.B1 �1	C$�: C�C$N)�utils.consoler   �pathlibr   r#   � �    r"   �<module>r(      s   �� !� �r'   
+FILE_END src/engine/__pycache__/chat.cpython-312.pyc 00a8f101b68c
+

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code-edith"
+dynamic = ["version"]
+description = "AI Coding Assistant CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Nolan Stark" }
+]
+keywords = ["cli", "ai", "assistant", "coding", "llm"]
+dependencies = [
+    "rich",
+    "python-dotenv",
+    "openai",
+    "halo",
+    "prompt_toolkit",
+    "pyperclip"
+]
+
+[project.scripts]
+code-edith = "index:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["index"]
+
+[tool.setuptools.dynamic]
+version = { file = "src/config/version.txt" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.json"]
