@@ -18,8 +18,7 @@ dependencies = [
     "python-dotenv",
     "openai",
     "halo",
-    "prompt_toolkit",
-    "pyperclip"
+    "prompt_toolkit"
 ]
 
 [project.scripts]
