@@ -2,14 +2,14 @@
   {
     "type": "function",
     "function": {
-      "name": "web_search",
-      "description": "Search the web for real-time data, current events, or external documentation not in training.",
+      "name": "WebSearch",
+      "description": "Executes an internet search to retrieve real-time data. Use this to find current events, up-to-date facts, or external technical documentation not present in your training data.",
       "parameters": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
-            "description": "Search query string."
+            "description": "The search keywords."
           }
         },
         "required": [
@@ -21,14 +21,14 @@
   {
     "type": "function",
     "function": {
-      "name": "read_file",
-      "description": "Read and return the full text content of a local file for inspection, analysis, or debugging.",
+      "name": "ReadFile",
+      "description": "Reads and returns the exact text content of a specified local file. Use this immediately when asked to inspect, analyze, debug, or summarize a specific file.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Relative or absolute path to the file."
+            "description": "The relative or absolute path to the file."
           }
         },
         "required": [
@@ -40,14 +40,76 @@
   {
     "type": "function",
     "function": {
-      "name": "list_dir",
-      "description": "List all files and folders in a directory to explore project structure or verify file existence.",
+      "name": "ListDir",
+      "description": "Returns a list of all files and folders within a given directory. Use this to inspect project structures, verify file existence, or explore the local file system.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Directory path to list. Use '.' for current directory."
+            "description": "The path to list. Use '.' for the current directory."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "CreateFile",
+      "description": "Creates a new, empty local file at the specified path. Use this to initialize a file before writing content or when scaffolding a new project structure.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path where the new file should be created."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "WriteFile",
+      "description": "Writes or overwrites text content to a specified local file. Use this immediately when asked to save generated code, modify existing scripts, or update configurations.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path to the file."
+          },
+          "content": {
+            "type": "string",
+            "description": "The exact text or code to write into the file."
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "DeleteFile",
+      "description": "Permanently deletes a specified local file. Use this to remove temporary files, clean up deprecated scripts, or fulfill explicit deletion requests.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path to the file to be deleted."
           }
         },
         "required": [
