@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-code-edith = "index:main"
+edith = "index:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
