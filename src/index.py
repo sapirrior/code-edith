@@ -1,6 +1,7 @@
 import os
 import time
 import utils.signals
+from utils.trust_folder import trust_folder
 from utils.command_handler import handle_command
 from utils.history import add_history, get_history, clear_history
 from engine.chat import make_request
@@ -22,6 +23,7 @@ def load_all_envs_one_by_one():
 
 def main():
 	try:
+		trust_folder()
 		show_banner()
 		api_key, base_url, model_name = load_all_envs_one_by_one()
 		animation(True, "Connecting...")
@@ -48,4 +50,4 @@ def main():
 	finally:
 		animation(False)
 		console.print("[greyx]Goodbye![/greyx]")
-		exit(1)
+		exit(0)
