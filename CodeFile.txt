@@ -1,7 +1,7 @@
 ROOT_NAME code-edith
-CREATED_UTC 2026-03-17T10:47:09Z
-TOTAL_SOURCE_MB 0.02
-FILE_COUNT 25
+CREATED_UTC 2026-03-19T02:50:33Z
+TOTAL_SOURCE_MB 0.03
+FILE_COUNT 33
 
 START_STRUCTURE
 code-edith/
@@ -24,13 +24,23 @@ code-edith/
 |   |   |-- input.py
 |   |   \-- print_md.py
 |   |-- utils/
+|   |   |-- commands/
+|   |   |   |-- helper/
+|   |   |   |   |-- __init__.py
+|   |   |   |   \-- clipboard.py
+|   |   |   |-- __init__.py
+|   |   |   |-- clear.py
+|   |   |   |-- copy.py
+|   |   |   |-- exit.py
+|   |   |   |-- help.py
+|   |   |   \-- reset.py
 |   |   |-- __init__.py
-|   |   |-- clipboard.py
 |   |   |-- command_handler.py
 |   |   |-- console.py
 |   |   |-- env.py
 |   |   |-- history.py
-|   |   \-- signals.py
+|   |   |-- signals.py
+|   |   \-- trust_folder.py
 |   \-- index.py
 |-- .gitignore
 |-- LICENSE
@@ -77,56 +87,210 @@ Thumbs.db
 
 FILE_END .gitignore 62d09d126b32
 
-FILE_START LICENSE 6bf1c7453a82
-Copyright (c) 2026 Nolan Stark. All rights reserved.
+FILE_START LICENSE f91b147d31bd
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
 
-Permission is hereby granted to any person obtaining a copy of this software
-and associated documentation files (the "Software") to use, modify, and share
-the Software for personal, educational, non-commercial research, or internal
-purposes, subject to the following conditions:
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-1. DISTRIBUTION & PUBLIC REDISTRIBUTION: You may not host, publish, or
-   distribute the Software or any modified version of it on public repositories,
-   websites, or platforms as a standalone product without (a) providing clear
-   credit to the original author and (b) including a link back to the original
-   repository. You may not distribute, sublicense, sell, or otherwise share
-   the Software in source or binary form for any purpose other than personal,
-   educational, or non-commercial sharing without prior written permission
-   from the copyright holder.
+   1. Definitions.
 
-2. COMMERCIAL RESTRICTION: You may not use the Software or any derivative work
-   for commercial purposes — including but not limited to selling, sublicensing,
-   offering it as a product or service, incorporating it into a commercial
-   product, or using it in any revenue-generating context — without explicit
-   written permission from Nolan Stark.
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
 
-3. PERSONAL & NON-COMMERCIAL SHARING: Permission is granted to use, modify,
-   and share this Software with others for personal, educational, or
-   non-commercial research purposes, provided that this copyright notice and
-   these conditions are retained in all copies or substantial portions of the
-   Software, and that appropriate credit and a link to the original repository
-   are included.
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
 
-4. ATTRIBUTION: Any permitted use, modification, or redistribution must retain
-   this copyright notice and these conditions in all copies or substantial
-   portions of the Software.
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
 
-5. MODIFICATIONS: You may modify the Software for personal use. Modified
-   versions may not be distributed or used commercially without explicit
-   written permission from the copyright holder.
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
 
-To request permission for distribution or commercial use, contact:
-Nolan Stark
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF,
-OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
 
-FILE_END LICENSE 6bf1c7453a82
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright 2026 Sapirrior
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+FILE_END LICENSE f91b147d31bd
 
 FILE_START README.md ab1e033d4fa5
 # Code Edith
@@ -192,7 +356,7 @@ This project is licensed under a custom license. See the [LICENSE](LICENSE) file
 
 FILE_END README.md ab1e033d4fa5
 
-FILE_START pyproject.toml 9c4ab902c60c
+FILE_START pyproject.toml 22870b98ad49
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
@@ -217,7 +381,7 @@ dependencies = [
 ]
 
 [project.scripts]
-code-edith = "index:main"
+edith = "index:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -232,7 +396,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.json"]
 
-FILE_END pyproject.toml 9c4ab902c60c
+FILE_END pyproject.toml 22870b98ad49
 
 FILE_START .assets/edith-asi-art.txt 02ddfd464968
  ▛███▜
@@ -246,10 +410,11 @@ FILE_START .assets/edith-asi-unicode.txt dd1759322a25
 \u0020\u2598\u2598\u0020\u259D\u259D
 FILE_END .assets/edith-asi-unicode.txt dd1759322a25
 
-FILE_START src/index.py 283a66c5230b
+FILE_START src/index.py 24f614f74420
 import os
 import time
 import utils.signals
+from utils.trust_folder import trust_folder
 from utils.command_handler import handle_command
 from utils.history import add_history, get_history, clear_history
 from engine.chat import make_request
@@ -271,6 +436,7 @@ def load_all_envs_one_by_one():
 
 def main():
 	try:
+		trust_folder()
 		show_banner()
 		api_key, base_url, model_name = load_all_envs_one_by_one()
 		animation(True, "Connecting...")
@@ -297,8 +463,8 @@ def main():
 	finally:
 		animation(False)
 		console.print("[greyx]Goodbye![/greyx]")
-		exit(1)
-FILE_END src/index.py 283a66c5230b
+		exit(0)
+FILE_END src/index.py 24f614f74420
 
 FILE_START src/config/system.txt e0838ee46a59
 You are Edith, a CLI-based coding agent for engineering tasks developed by Nolan Stark.
@@ -312,19 +478,19 @@ RULES:
 7. always write structured Codes.
 FILE_END src/config/system.txt e0838ee46a59
 
-FILE_START src/config/tools.json 14cde8087772
+FILE_START src/config/tools.json 038adf639115
 [
   {
     "type": "function",
     "function": {
-      "name": "web_search",
-      "description": "Search the web for real-time data, current events, or external documentation not in training.",
+      "name": "WebSearch",
+      "description": "Executes an internet search to retrieve real-time data. Use this to find current events, up-to-date facts, or external technical documentation not present in your training data.",
       "parameters": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
-            "description": "Search query string."
+            "description": "The search keywords."
           }
         },
         "required": [
@@ -336,14 +502,14 @@ FILE_START src/config/tools.json 14cde8087772
   {
     "type": "function",
     "function": {
-      "name": "read_file",
-      "description": "Read and return the full text content of a local file for inspection, analysis, or debugging.",
+      "name": "ReadFile",
+      "description": "Reads and returns the exact text content of a specified local file. Use this immediately when asked to inspect, analyze, debug, or summarize a specific file.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Relative or absolute path to the file."
+            "description": "The relative or absolute path to the file."
           }
         },
         "required": [
@@ -355,14 +521,76 @@ FILE_START src/config/tools.json 14cde8087772
   {
     "type": "function",
     "function": {
-      "name": "list_dir",
-      "description": "List all files and folders in a directory to explore project structure or verify file existence.",
+      "name": "ListDir",
+      "description": "Returns a list of all files and folders within a given directory. Use this to inspect project structures, verify file existence, or explore the local file system.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Directory path to list. Use '.' for current directory."
+            "description": "The path to list. Use '.' for the current directory."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "CreateFile",
+      "description": "Creates a new, empty local file at the specified path. Use this to initialize a file before writing content or when scaffolding a new project structure.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path where the new file should be created."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "WriteFile",
+      "description": "Writes or overwrites text content to a specified local file. Use this immediately when asked to save generated code, modify existing scripts, or update configurations.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path to the file."
+          },
+          "content": {
+            "type": "string",
+            "description": "The exact text or code to write into the file."
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "DeleteFile",
+      "description": "Permanently deletes a specified local file. Use this to remove temporary files, clean up deprecated scripts, or fulfill explicit deletion requests.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The relative or absolute path to the file to be deleted."
           }
         },
         "required": [
@@ -373,11 +601,11 @@ FILE_START src/config/tools.json 14cde8087772
   }
 ]
 
-FILE_END src/config/tools.json 14cde8087772
+FILE_END src/config/tools.json 038adf639115
 
-FILE_START src/config/version.txt d15b20d31f90
-26.0.1
-FILE_END src/config/version.txt d15b20d31f90
+FILE_START src/config/version.txt 3408b90a4f08
+26.0.3
+FILE_END src/config/version.txt 3408b90a4f08
 
 FILE_START src/engine/__init__.py empty000000
 EMPTY_CONTENT
@@ -546,81 +774,31 @@ FILE_START src/utils/__init__.py empty000000
 EMPTY_CONTENT
 FILE_END src/utils/__init__.py empty000000
 
-FILE_START src/utils/clipboard.py 7cd4909298a8
-import subprocess
-import sys
-
-def copy(text):
-    """Copy text to clipboard. Returns True on success, False otherwise."""
-    if not text:
-        return False
-    
-    # Platform-specific and fallback clipboard tools
-    cmds = {
-        'darwin': [['pbcopy']],
-        'win32': [['clip']],
-    }.get(sys.platform, [['xclip', '-selection', 'clipboard'], ['wl-copy'], ['termux-clipboard-set']])
-    
-    content = str(text).encode('utf-8')
-    
-    for cmd in cmds:
-        try:
-            subprocess.run(cmd, input=content, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL, check=True, timeout=5)
-            return True
-        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            continue
-    
-    return False
-
-FILE_END src/utils/clipboard.py 7cd4909298a8
-
-FILE_START src/utils/command_handler.py 0e18b98ca6a4
-import os
-import sys
-import shutil
-from utils.clipboard import copy
-from helper.banner import show_banner
-from utils.history import clear_history, get_history # Added get_history
+FILE_START src/utils/command_handler.py a563988c2b5d
 from utils.console import console
+from utils.commands.clear import cmd_clear
+from utils.commands.copy import cmd_copy
+from utils.commands.reset import cmd_reset
+from utils.commands.exit import cmd_exit
+from utils.commands.help import cmd_help
 
 def handle_command(query):
-    parts = query[1:].lower().split()
-    cmd = parts[0] if parts else ""
-
-    if cmd == "clear":
-        console.width = shutil.get_terminal_size().columns - 2
-        show_banner()
-    
-    elif cmd == "copy":
-        history = get_history()
-        assistant_msgs = [m["content"] for m in history if m["role"] == "assistant"]
-        if assistant_msgs and assistant_msgs[-1]:
-            if copy(str(assistant_msgs[-1])):
-            	console.print("[orangex]Latest response copied to clipboard![/orangex]\n")
-            else:
-            	console.print("[orangex]No clipboard tool found\n[/orangex]")
-        else:
-            console.print("[orangex]Nothing to copy yet.[/orangex]\n")
-        
-    elif cmd == "reset":
-        clear_history()
-        console.print("[orangex]History reset. Memory wiped.[/orangex]\n")
-    
-    elif cmd == "exit":
-        sys.exit(0)
-
-    elif cmd == "help":
-        console.print("[orangex]Edith Commands:[/orangex]")
-        console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
-        console.print("[greyx]/copy [/greyx] - Copy last response to clipboard") # FIXED: Added to help menu
-        console.print("[greyx]/reset[/greyx] - Wipe conversation history")
-        console.print("[greyx]/exit [/greyx] - Stop Edith safely")
-        console.print("[greyx]/help [/greyx] - Show this menu\n")
-    
-    else:
-        console.print(f"[orangex]Unknown command:[/orangex][greyx]/{cmd}[/greyx]\n")
-
-FILE_END src/utils/command_handler.py 0e18b98ca6a4
+	parts = query[1:].lower().split()
+	cmd = parts[0] if parts else ""
+	
+	if cmd == "clear":
+		cmd_clear()
+	elif cmd == "copy":
+		cmd_copy()
+	elif cmd == "reset":
+		cmd_reset()
+	elif cmd == "exit":
+		cmd_exit()
+	elif cmd == "help":
+		cmd_help()
+	else:
+		console.print(f"[orangex]Unknown command:[/orangex][greyx]/{cmd}[/greyx]\n")
+FILE_END src/utils/command_handler.py a563988c2b5d
 
 FILE_START src/utils/console.py 0b5b2b8b9710
 import shutil
@@ -694,4 +872,126 @@ for sig in signal.valid_signals() - _UNCATCHABLE:
     except (ValueError, OSError, RuntimeError):
         continue
 FILE_END src/utils/signals.py ebf63381cdbb
+
+FILE_START src/utils/trust_folder.py fd431b12e3b7
+from pathlib import Path
+from utils.console import console
+
+def trust_folder():
+	
+	trust_dir = Path(".edith")
+	trust_file = trust_dir / "TRUST"
+	
+	if trust_file.exists():
+		return True
+	else:
+		console.clear()
+		console.print(f"[orangex]Folder:[/orangex] [greyx]{Path.cwd().name}.[/greyx]")
+		console.print("[orangex]This folder is not trusted.[/orangex]")
+		
+		choice = console.input("Do you trust this folder (y/n): ").strip().lower()
+		
+		if choice != 'y':
+			exit(0)
+		else:
+			try:
+				trust_dir.mkdir(parents=True, exist_ok=True)
+				trust_file.touch()
+				console.print("[orangex]Starting...[/orangex]")
+				return True
+			except Exception as e:
+				console.print("[Error] Checking Trust Folder.")
+				exit(1)
+FILE_END src/utils/trust_folder.py fd431b12e3b7
+
+FILE_START src/utils/commands/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/utils/commands/__init__.py empty000000
+
+FILE_START src/utils/commands/clear.py 86fb1d090fe8
+import shutil
+from utils.console import console
+from helper.banner import show_banner
+
+def cmd_clear():
+	console.width = shutil.get_terminal_size().columns - 2
+	show_banner()
+FILE_END src/utils/commands/clear.py 86fb1d090fe8
+
+FILE_START src/utils/commands/copy.py eed2e2b1f49e
+from utils.history import get_history
+from utils.console import console
+from utils.commands.helper.clipboard import copy
+
+def cmd_copy():
+	history = get_history()
+	assistant_msgs = [m["content"] for m in history if m["role"] == "assistant"]
+	if assistant_msgs and assistant_msgs[-1]:
+		if copy(str(assistant_msgs[-1])):
+			console.print("[orangex]Latest response copied to clipboard![/orangex]\n")
+		else:
+			console.print("[orangex]No clipboard tool found\n[/orangex]")
+	else:
+		console.print("[orangex]Nothing to copy yet.[/orangex]\n")
+FILE_END src/utils/commands/copy.py eed2e2b1f49e
+
+FILE_START src/utils/commands/exit.py 3007cd6d1d85
+import sys
+
+def cmd_exit():
+	sys.exit(0)
+FILE_END src/utils/commands/exit.py 3007cd6d1d85
+
+FILE_START src/utils/commands/help.py b02f5a2c1618
+from utils.console import console
+
+def cmd_help():
+	console.print("[orangex]Edith Commands:[/orangex]")
+	console.print("[greyx]/clear[/greyx] - Clear the terminal screen")
+	console.print("[greyx]/copy [/greyx] - Copy last response to clipboard")
+	console.print("[greyx]/reset[/greyx] - Wipe conversation history")
+	console.print("[greyx]/exit [/greyx] - Stop Edith safely")
+	console.print("[greyx]/help [/greyx] - Show this menu\n")
+FILE_END src/utils/commands/help.py b02f5a2c1618
+
+FILE_START src/utils/commands/reset.py e6492a397a7a
+from utils.console import console
+from utils.history import clear_history
+
+def cmd_reset():
+	clear_history()
+	console.print("[orangex]History reset. Memory wiped.[/orangex]\n")
+FILE_END src/utils/commands/reset.py e6492a397a7a
+
+FILE_START src/utils/commands/helper/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/utils/commands/helper/__init__.py empty000000
+
+FILE_START src/utils/commands/helper/clipboard.py 7cd4909298a8
+import subprocess
+import sys
+
+def copy(text):
+    """Copy text to clipboard. Returns True on success, False otherwise."""
+    if not text:
+        return False
+    
+    # Platform-specific and fallback clipboard tools
+    cmds = {
+        'darwin': [['pbcopy']],
+        'win32': [['clip']],
+    }.get(sys.platform, [['xclip', '-selection', 'clipboard'], ['wl-copy'], ['termux-clipboard-set']])
+    
+    content = str(text).encode('utf-8')
+    
+    for cmd in cmds:
+        try:
+            subprocess.run(cmd, input=content, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL, check=True, timeout=5)
+            return True
+        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            continue
+    
+    return False
+
+FILE_END src/utils/commands/helper/clipboard.py 7cd4909298a8
 
