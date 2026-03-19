@@ -51,7 +51,7 @@ If you encounter a bug or unexpected behavior, please open an issue on the [GitH
 ---
 
 ## License
-This project is licensed under a custom license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
+This project is licensed under Apache-2.0 license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
 
 ---
 
