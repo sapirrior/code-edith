@@ -18,7 +18,7 @@ dependencies = [
     "python-dotenv",
     "openai",
     "halo",
-    "prompt_toolkit"
+    "prompt_toolkit",
     "ddgs"
 ]
 
