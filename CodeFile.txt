@@ -1,7 +1,7 @@
 ROOT_NAME code-edith
-CREATED_UTC 2026-03-20T03:14:36Z
+CREATED_UTC 2026-03-20T09:52:37Z
 TOTAL_SOURCE_MB 0.03
-FILE_COUNT 33
+FILE_COUNT 39
 
 START_STRUCTURE
 code-edith/
@@ -14,9 +14,16 @@ code-edith/
 |   |   |-- tools.json
 |   |   \-- version.txt
 |   |-- engine/
+|   |   |-- tools/
+|   |   |   |-- __init__.py
+|   |   |   |-- read_file.py
+|   |   |   |-- shell_command.py
+|   |   |   |-- web_search.py
+|   |   |   \-- write_file.py
 |   |   |-- __init__.py
 |   |   |-- chat.py
-|   |   \-- client.py
+|   |   |-- client.py
+|   |   \-- tool_handler.py
 |   |-- helper/
 |   |   |-- __init__.py
 |   |   |-- animation.py
@@ -292,7 +299,7 @@ FILE_START LICENSE f91b147d31bd
 
 FILE_END LICENSE f91b147d31bd
 
-FILE_START README.md ab1e033d4fa5
+FILE_START README.md 7d7ea8824c82
 # Code Edith
 
 **Code Edith** (`code-edith`) is a lightweight, terminal-based AI coding assistant. It connects to any AI model that implements the OpenAI-compatible response structure, giving you flexibility over your choice of provider or self-hosted model.
@@ -346,7 +353,7 @@ If you encounter a bug or unexpected behavior, please open an issue on the [GitH
 ---
 
 ## License
-This project is licensed under a custom license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
+This project is licensed under Apache-2.0 license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
 
 ---
 
@@ -354,9 +361,9 @@ This project is licensed under a custom license. See the [LICENSE](LICENSE) file
 
 *by Nolan Stark.*
 
-FILE_END README.md ab1e033d4fa5
+FILE_END README.md 7d7ea8824c82
 
-FILE_START pyproject.toml 22870b98ad49
+FILE_START pyproject.toml e89b1dd6d8d4
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
@@ -378,6 +385,7 @@ dependencies = [
     "openai",
     "halo",
     "prompt_toolkit"
+    "ddgs"
 ]
 
 [project.scripts]
@@ -396,7 +404,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.json"]
 
-FILE_END pyproject.toml 22870b98ad49
+FILE_END pyproject.toml e89b1dd6d8d4
 
 FILE_START .assets/edith-asi-art.txt 02ddfd464968
  ▛███▜
@@ -410,7 +418,7 @@ FILE_START .assets/edith-asi-unicode.txt dd1759322a25
 \u0020\u2598\u2598\u0020\u259D\u259D
 FILE_END .assets/edith-asi-unicode.txt dd1759322a25
 
-FILE_START src/index.py 24f614f74420
+FILE_START src/index.py 1477663d7182
 import os
 import time
 import utils.signals
@@ -426,67 +434,76 @@ from utils.console import console
 from helper.banner import show_banner
 from utils.env import load_home_env, load_env
 
-
 def load_all_envs_one_by_one():
-	
-	api_key = load_env("EDITH_API_KEY")
-	base_url = load_env("EDITH_BASE_URL")
-	model_name = load_env("EDITH_MODEL_NAME")
-	return api_key, base_url, model_name
+    api_key = load_env("EDITH_API_KEY")
+    base_url = load_env("EDITH_BASE_URL")
+    model_name = load_env("EDITH_MODEL_NAME") or "gpt-4o"
+    return api_key, base_url, model_name
 
 def main():
-	try:
-		trust_folder()
-		show_banner()
-		api_key, base_url, model_name = load_all_envs_one_by_one()
-		animation(True, "Connecting...")
-		client = load_client(api_key, base_url)
-		animation(False)
-		
-		while True:
-			query = get_input().strip()
-			if not query: continue
-			if query.startswith("/"): handle_command(query); continue
-			add_history("user", query)
-			animation(True, "Thinking...")
-			
-			response = make_request(client, get_history(), model_name)
-			animation(False)
-			print_md(response)
-			add_history("assistant", response)
-			console.print("\n")
-		
-	except EOFError:
-		pass
-	except KeyboardInterrupt:
-		pass
-	finally:
-		animation(False)
-		console.print("[greyx]Goodbye![/greyx]")
-		exit(0)
-FILE_END src/index.py 24f614f74420
+    try:
+        trust_folder()
+        show_banner()
+        api_key, base_url, model_name = load_all_envs_one_by_one()
+        
+        animation(True, "Connecting...")
+        client = load_client(api_key, base_url)
+        animation(False)
 
-FILE_START src/config/system.txt c300ab41644b
+        while True:
+            query = get_input().strip()
+            if not query: continue
+            if query.startswith("/"): handle_command(query); continue
+
+            add_history({"role": "user", "content": query})
+            animation(True, "Thinking...")
+
+            response = make_request(client, get_history(), model_name)
+            animation(False)
+
+            print_md(response)
+            add_history({"role": "assistant", "content": response})
+            console.print("\n")
+
+    except EOFError:
+        pass
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        animation(False)
+        console.print(f"\n[orangex]Engine Error:[/orangex] [greyx]{str(e)}[/greyx]")
+    finally:
+        animation(False)
+        console.print("[greyx]Goodbye![/greyx]")
+        exit(0)
+FILE_END src/index.py 1477663d7182
+
+FILE_START src/config/system.txt 0bc11c522419
 <identity>
 You are Edith ("code-edith"), a CLI coding agent built by Nolan Stark.
 </identity>
 
 <personality>
 Concise. Direct. No fluff.
-- Use short responses for no code tasks.
-- Be polite and helpful
+- Use short responses for non-code tasks.
+- Be polite and helpful.
 - Reply with code or commands by default — skip explanations unless asked.
 - No greetings, no filler, no unsolicited suggestions.
 - If a task is ambiguous, ask short clarifying questions before execution.
 </personality>
 
-<scope>
-Engineering tasks only: code, debugging, refactoring, web search, shell commands, architecture, tooling.
-Decline anything outside this scope in one sentence.
-</scope>
+<tool_usage>
+- You are equipped with 4 core tools: WebSearch, ReadFile, WriteFile, and ShellCommand.
+- File System: Use `ShellCommand` for ALL directory and file management (e.g., `mkdir`, `rm`, `mv`, `cp`, `ls`, `find`).
+- Execution: Use `ShellCommand` to run scripts, compile code, or install packages (e.g., `python main.py`, `npm install`).
+- Code Generation: Use `WriteFile` to create or modify the actual contents of scripts and text files.
+- Never use `ShellCommand` to echo large amounts of code into a file; always use `WriteFile` for that.
+- If the user denies a tool execution, stop immediately and output a short acknowledgment. Do not attempt workarounds.
+</tool_usage>
 
 <safety>
-Refuse tasks that are destructive, illegal, or malicious — this includes but is not limited to: network attacks, credential theft, removing system packages, bypassing auth, or harming data. One-line refusal, no elaboration.
+Refuse tasks that are destructive, illegal, or malicious — this includes but is not limited to: network attacks, credential theft, removing system packages, bypassing auth, or harming data outside the current project workspace.
+One-line refusal, no elaboration.
 </safety>
 
 <format>
@@ -496,26 +513,22 @@ Refuse tasks that are destructive, illegal, or malicious — this includes but i
 - No markdown prose unless the user asks for an explanation.
 - Prefer minimal, readable output.
 </format>
-FILE_END src/config/system.txt c300ab41644b
 
-FILE_START src/config/tools.json 038adf639115
+FILE_END src/config/system.txt 0bc11c522419
+
+FILE_START src/config/tools.json e70ab465023f
 [
   {
     "type": "function",
     "function": {
       "name": "WebSearch",
-      "description": "Executes an internet search to retrieve real-time data. Use this to find current events, up-to-date facts, or external technical documentation not present in your training data.",
+      "description": "Executes an internet search to retrieve real-time data or external technical documentation.",
       "parameters": {
         "type": "object",
         "properties": {
-          "query": {
-            "type": "string",
-            "description": "The search keywords."
-          }
+          "query": { "type": "string", "description": "The search keywords." }
         },
-        "required": [
-          "query"
-        ]
+        "required": ["query"]
       }
     }
   },
@@ -523,56 +536,13 @@ FILE_START src/config/tools.json 038adf639115
     "type": "function",
     "function": {
       "name": "ReadFile",
-      "description": "Reads and returns the exact text content of a specified local file. Use this immediately when asked to inspect, analyze, debug, or summarize a specific file.",
+      "description": "Reads and returns the exact text content of a specified local file.",
       "parameters": {
         "type": "object",
         "properties": {
-          "path": {
-            "type": "string",
-            "description": "The relative or absolute path to the file."
-          }
+          "path": { "type": "string", "description": "The path to the file." }
         },
-        "required": [
-          "path"
-        ]
-      }
-    }
-  },
-  {
-    "type": "function",
-    "function": {
-      "name": "ListDir",
-      "description": "Returns a list of all files and folders within a given directory. Use this to inspect project structures, verify file existence, or explore the local file system.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "The path to list. Use '.' for the current directory."
-          }
-        },
-        "required": [
-          "path"
-        ]
-      }
-    }
-  },
-  {
-    "type": "function",
-    "function": {
-      "name": "CreateFile",
-      "description": "Creates a new, empty local file at the specified path. Use this to initialize a file before writing content or when scaffolding a new project structure.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "The relative or absolute path where the new file should be created."
-          }
-        },
-        "required": [
-          "path"
-        ]
+        "required": ["path"]
       }
     }
   },
@@ -580,48 +550,34 @@ FILE_START src/config/tools.json 038adf639115
     "type": "function",
     "function": {
       "name": "WriteFile",
-      "description": "Writes or overwrites text content to a specified local file. Use this immediately when asked to save generated code, modify existing scripts, or update configurations.",
+      "description": "Writes or overwrites text content to a specified local file.",
       "parameters": {
         "type": "object",
         "properties": {
-          "path": {
-            "type": "string",
-            "description": "The relative or absolute path to the file."
-          },
-          "content": {
-            "type": "string",
-            "description": "The exact text or code to write into the file."
-          }
+          "path": { "type": "string", "description": "The path to the file." },
+          "content": { "type": "string", "description": "The exact text or code to write." }
         },
-        "required": [
-          "path",
-          "content"
-        ]
+        "required": ["path", "content"]
       }
     }
   },
   {
     "type": "function",
     "function": {
-      "name": "DeleteFile",
-      "description": "Permanently deletes a specified local file. Use this to remove temporary files, clean up deprecated scripts, or fulfill explicit deletion requests.",
+      "name": "ShellCommand",
+      "description": "Executes a bash shell command in the local terminal. Use this for file manipulation (mkdir, rm, cp, mv), running scripts (python main.py), or installing packages. DO NOT use for destructive system-wide commands.",
       "parameters": {
         "type": "object",
         "properties": {
-          "path": {
-            "type": "string",
-            "description": "The relative or absolute path to the file to be deleted."
-          }
+          "command": { "type": "string", "description": "The exact bash command to execute." }
         },
-        "required": [
-          "path"
-        ]
+        "required": ["command"]
       }
     }
   }
 ]
 
-FILE_END src/config/tools.json 038adf639115
+FILE_END src/config/tools.json e70ab465023f
 
 FILE_START src/config/version.txt 3408b90a4f08
 26.0.3
@@ -631,31 +587,67 @@ FILE_START src/engine/__init__.py empty000000
 EMPTY_CONTENT
 FILE_END src/engine/__init__.py empty000000
 
-FILE_START src/engine/chat.py eff77661ff3a
-from utils.console import console
+FILE_START src/engine/chat.py 6d66632acb65
+import json
 from pathlib import Path
+from engine.tool_handler import handle_tool_call
+from utils.history import add_history
 
 def make_request(client, msgs, model):
-    try:
-        # 1. Get the absolute path to THIS specific file (chat.py)
-        current_file = Path(__file__).resolve()
-        src_dir = current_file.parent.parent
-        path = src_dir / "config" / "system.txt"
-        
-        content = path.read_text().strip()
-        system = [{"role": "system", "content": content}]
-        messages = system + msgs
-        
+    src_dir = Path(__file__).resolve().parent.parent
+    system_content = (src_dir / "config" / "system.txt").read_text().strip()
+
+    with open(src_dir / "config" / "tools.json", 'r') as f:
+        tools_schema = json.load(f)
+
+    messages = [{"role": "system", "content": system_content}] + msgs
+
+    max_iter = 10
+    for _ in range(max_iter):
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            tools=None
+            tools=tools_schema,
+            tool_choice="auto"
         )
-        return response.choices[0].message.content
-    except Exception as e:
-        console.print(f"[Error] Making message request to the model.")
-        exit(1)
-FILE_END src/engine/chat.py eff77661ff3a
+
+        msg = response.choices[0].message
+
+        if not msg.tool_calls:
+            return msg.content or ""
+
+        # FIX: Ensure 'content' key exists for OpenAI API compliance
+        assistant_msg = msg.model_dump()
+        if assistant_msg.get("content") is None:
+            assistant_msg["content"] = ""
+
+        messages.append(assistant_msg)
+        add_history(assistant_msg)
+
+        tool_results = []
+        for tool_call in msg.tool_calls:
+            name = tool_call.function.name
+            try:
+                args = json.loads(tool_call.function.arguments)
+            except json.JSONDecodeError:
+                args = {}
+
+            result = handle_tool_call(name, args)
+
+            tool_msg = {
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "name": name,
+                "content": str(result)
+            }
+            tool_results.append(tool_msg)
+            add_history(tool_msg)
+
+        messages.extend(tool_results)
+
+    return ""
+
+FILE_END src/engine/chat.py 6d66632acb65
 
 FILE_START src/engine/client.py b91fdf4a9b95
 from openai import OpenAI
@@ -670,6 +662,153 @@ def load_client(key, url):
 		console.print("[Error] connecting with server.")
 		exit(1)
 FILE_END src/engine/client.py b91fdf4a9b95
+
+FILE_START src/engine/tool_handler.py 768da55e7c4c
+import shutil
+from engine.tools import web_search, read_file, write_file, shell_command
+from helper.animation import animation
+from utils.console import console
+from rich.panel import Panel
+from rich.syntax import Syntax
+
+TOOL_MAP = {
+    "WebSearch":  web_search.execute,
+    "ReadFile":   read_file.execute,
+    "WriteFile":  write_file.execute,
+    "ShellCommand": shell_command.execute,
+}
+
+DESTRUCTIVE_TOOLS = {"WriteFile", "ShellCommand"}
+
+def handle_tool_call(name, args):
+    func = TOOL_MAP.get(name)
+    if not func:
+        return f"Error: Tool '{name}' not found."
+
+    target = args.get("command") or args.get("path") or args.get("query") or "..."
+    content = args.get("content")
+
+    if name in DESTRUCTIVE_TOOLS:
+        animation(False)
+        console.print()
+        
+        if content:
+            ext = target.split('.')[-1] if '.' in target else 'text'
+            syntax_content = Syntax(content, ext, theme="monokai", word_wrap=True, background_color="default")
+            preview_panel = Panel(
+                syntax_content,
+                # Tightly packed title: Action in orange, tool name in grey, target in grey
+                title=f"[orangex]Action:[/orangex] [greyx]{name}[/greyx] [orangex]|[/orangex] [greyx]{target}[/greyx]",
+                title_align="left",
+                border_style="greyx",
+                padding=(0, 2),
+                expand=False,
+                # Dynamically calculate exact terminal width minus 2
+                width=shutil.get_terminal_size().columns - 2
+            )
+            console.print(preview_panel)
+        else:
+            if name == "ShellCommand":
+                console.print(f"   [orangex]Action:[/orangex] [greyx]{name}[/greyx]\n   [orangex]Argument:[/orangex] [greyx]{target}[/greyx]", soft_wrap=True)
+            else:
+                console.print(f"   [orangex]Action:[/orangex] [greyx]{name} | {target}[/greyx]", soft_wrap=True)
+
+        try:
+            choice = input("   Allow? (y/n): ").strip().lower()
+            console.print()
+            if choice not in ('y', 'yes'):
+                animation(True, "Thinking...")
+                return "Error: User denied permission to execute this tool."
+        except (KeyboardInterrupt, EOFError):
+            console.print()
+            animation(True, "Thinking...")
+            return "Error: User aborted tool execution."
+
+    try:
+        animation(True, f"Running {name}...")
+        return str(func(**args))
+    except Exception as e:
+        return f"Error executing {name}: {str(e)}"
+    finally:
+        animation(True, "Thinking...")
+
+FILE_END src/engine/tool_handler.py 768da55e7c4c
+
+FILE_START src/engine/tools/__init__.py empty000000
+EMPTY_CONTENT
+FILE_END src/engine/tools/__init__.py empty000000
+
+FILE_START src/engine/tools/read_file.py e8bdca656734
+from pathlib import Path
+
+def execute(path: str) -> str:
+    p = Path(path).expanduser().resolve()
+    if not p.exists(): return f"Error: File not found: {path}"
+    if not p.is_file(): return f"Error: Not a file: {path}"
+    try:
+        return p.read_text(errors="replace")
+    except Exception as e:
+        return f"Error reading file: {e}"
+
+FILE_END src/engine/tools/read_file.py e8bdca656734
+
+FILE_START src/engine/tools/shell_command.py b20ccc5a929a
+import subprocess
+
+def execute(command: str) -> str:
+    try:
+        result = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+        stdout = result.stdout.strip()
+        stderr = result.stderr.strip()
+        
+        output = []
+        if stdout:
+            output.append(stdout)
+        if stderr:
+            output.append(f"Error/Warning: {stderr}")
+        
+        if not output:
+            return f"Command '{command}' executed successfully with no output."
+        return "\n".join(output)
+    except Exception as e:
+        return f"Execution Error: {str(e)}"
+
+FILE_END src/engine/tools/shell_command.py b20ccc5a929a
+
+FILE_START src/engine/tools/web_search.py 38d5265cb269
+from ddgs import DDGS
+
+def execute(query: str) -> str:
+    try:
+        results = []
+        with DDGS() as ddgs:
+            for r in ddgs.text(query, max_results=5):
+                results.append(f"Title: {r.get('title')}\nURL: {r.get('href')}\nSnippet: {r.get('body')}")
+        return "\n---\n".join(results) if results else "No results found."
+    except Exception as e:
+        return f"Search error: {e}"
+
+FILE_END src/engine/tools/web_search.py 38d5265cb269
+
+FILE_START src/engine/tools/write_file.py c705452a2d69
+from pathlib import Path
+
+def execute(path: str, content: str) -> str:
+    p = Path(path).expanduser().resolve()
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(content)
+        return f"Successfully wrote {len(content)} characters to {path}"
+    except Exception as e:
+        return f"Error writing file: {e}"
+
+FILE_END src/engine/tools/write_file.py c705452a2d69
 
 FILE_START src/helper/__init__.py empty000000
 EMPTY_CONTENT
@@ -867,19 +1006,43 @@ def load_env(var):
 			return val
 FILE_END src/utils/env.py f1903712faa5
 
-FILE_START src/utils/history.py 74aad4a51707
-chat_history = []
+FILE_START src/utils/history.py 6991cdeada74
+class ChatHistory:
+    """Manages the conversation history for the AI model."""
+    def __init__(self, max_length=None):
+        self._history = []
+        self.max_length = max_length
 
-def add_history(role, content):
-	chat_history.append({"role": role, "content": content})
+    def add(self, message):
+        if not isinstance(message, dict):
+            raise ValueError("Message must be a dictionary.")
+        self._history.append(message)
+        
+        if self.max_length and len(self._history) > self.max_length:
+            self._history.pop(0)
+
+    def get(self):
+        return list(self._history)
+
+    def clear(self):
+        self._history.clear()
+
+    def __len__(self):
+        return len(self._history)
+
+
+_manager = ChatHistory()
+
+def add_history(message):
+    _manager.add(message)
 
 def get_history():
-	return chat_history
+    return _manager.get()
 
 def clear_history():
-	global chat_history
-	chat_history = []
-FILE_END src/utils/history.py 74aad4a51707
+    _manager.clear()
+
+FILE_END src/utils/history.py 6991cdeada74
 
 FILE_START src/utils/signals.py ebf63381cdbb
 import signal
@@ -938,22 +1101,26 @@ def cmd_clear():
 	show_banner()
 FILE_END src/utils/commands/clear.py 86fb1d090fe8
 
-FILE_START src/utils/commands/copy.py eed2e2b1f49e
+FILE_START src/utils/commands/copy.py 577b2c58088a
 from utils.history import get_history
 from utils.console import console
 from utils.commands.helper.clipboard import copy
 
 def cmd_copy():
-	history = get_history()
-	assistant_msgs = [m["content"] for m in history if m["role"] == "assistant"]
-	if assistant_msgs and assistant_msgs[-1]:
-		if copy(str(assistant_msgs[-1])):
-			console.print("[orangex]Latest response copied to clipboard![/orangex]\n")
-		else:
-			console.print("[orangex]No clipboard tool found\n[/orangex]")
-	else:
-		console.print("[orangex]Nothing to copy yet.[/orangex]\n")
-FILE_END src/utils/commands/copy.py eed2e2b1f49e
+    history = get_history()
+    
+    # FIX: Use without a "content" key
+    assistant_msgs = [m.get("content", "") for m in history if m.get("role") == "assistant"]
+    
+    if assistant_msgs and assistant_msgs[-1]:
+        if copy(str(assistant_msgs[-1])):
+            console.print("[orangex]Latest response copied to clipboard![/orangex]\n")
+        else:
+            console.print("[orangex]No clipboard tool found\n[/orangex]")
+    else:
+        console.print("[orangex]Nothing to copy yet.[/orangex]\n")
+
+FILE_END src/utils/commands/copy.py 577b2c58088a
 
 FILE_START src/utils/commands/exit.py 3007cd6d1d85
 import sys

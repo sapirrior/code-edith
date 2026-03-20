@@ -19,6 +19,7 @@ dependencies = [
     "openai",
     "halo",
     "prompt_toolkit"
+    "ddgs"
 ]
 
 [project.scripts]
