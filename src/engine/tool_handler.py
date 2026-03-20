@@ -49,12 +49,10 @@ def handle_tool_call(name, args):
 
         try:
             choice = input("   Allow? (y/n): ").strip().lower()
-            console.print()
             if choice not in ('y', 'yes'):
                 animation(True, "Thinking...")
                 return "Error: User denied permission to execute this tool."
         except (KeyboardInterrupt, EOFError):
-            console.print()
             animation(True, "Thinking...")
             return "Error: User aborted tool execution."
 
