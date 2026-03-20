@@ -34,13 +34,13 @@ def main():
 			query = get_input().strip()
 			if not query: continue
 			if query.startswith("/"): handle_command(query); continue
-			add_history("user", query)
+			add_history({"role": "user", "content": query})
 			animation(True, "Thinking...")
 			
 			response = make_request(client, get_history(), model_name)
 			animation(False)
 			print_md(response)
-			add_history("assistant", response)
+			add_history({"role": "assistant", "content": response})
 			console.print("\n")
 		
 	except EOFError:
