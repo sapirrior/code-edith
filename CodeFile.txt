@@ -1,13 +1,16 @@
 ROOT_NAME code-edith
-CREATED_UTC 2026-03-20T13:31:35Z
-TOTAL_SOURCE_MB 0.03
-FILE_COUNT 39
+CREATED_UTC 2026-03-22T10:34:41Z
+TOTAL_SOURCE_MB 0.04
+FILE_COUNT 40
 
 START_STRUCTURE
 code-edith/
 |-- .assets/
 |   |-- edith-asi-art.txt
 |   \-- edith-asi-unicode.txt
+|-- .github/
+|   \-- workflows/
+|       \-- python-publish.yml
 |-- src/
 |   |-- config/
 |   |   |-- system.txt
@@ -299,18 +302,32 @@ FILE_START LICENSE f91b147d31bd
 
 FILE_END LICENSE f91b147d31bd
 
-FILE_START README.md 7d7ea8824c82
+FILE_START README.md d978424b90c4
 # Code Edith
 
-**Code Edith** (`code-edith`) is a lightweight, terminal-based AI coding assistant. It connects to any AI model that implements the OpenAI-compatible response structure, giving you flexibility over your choice of provider or self-hosted model.
+A lightweight, terminal-based AI coding agent. Connects to any OpenAI-compatible API endpoint — hosted providers or self-hosted models both work.
 
-> **Note:** This project is under active development. Features such as tool-calling are not yet available.
+![License](https://img.shields.io/badge/license-Apache--2.0-orange) ![Python](https://img.shields.io/badge/python-3.10%2B-grey)
+
+---
+
+## Requirements
+
+- Python 3.10 or higher
+- An OpenAI-compatible API endpoint (e.g. OpenAI, Anthropic via proxy, Ollama, LM Studio)
+- A `.env` file in your home directory (`~/.env`) — see [Configuration](#configuration)
 
 ---
 
 ## Installation
 
-Install directly from GitHub using `pip`:
+**From PyPI** (stable):
+
+```bash
+pip install code-edith
+```
+
+**From GitHub** (latest):
 
 ```bash
 pip install git+https://github.com/sapirrior/code-edith
@@ -320,50 +337,81 @@ pip install git+https://github.com/sapirrior/code-edith
 
 ## Configuration
 
-After installation, create a `.env` file in your **home directory** (`~/.env`) and define the following environment variables:
+Create a `.env` file in your **home directory** (`~/.env`) with the following variables:
 
 ```env
 EDITH_API_KEY=your_api_key
-EDITH_MODEL_NAME=your_model_name
-EDITH_BASE_URL=base_url_for_the_model
+EDITH_BASE_URL=https://api.openai.com/v1
+EDITH_MODEL_NAME=gpt-4o
 ```
 
 | Variable | Description |
 |---|---|
-| `EDITH_API_KEY` | API key for your chosen provider |
-| `EDITH_MODEL_NAME` | Model identifier (e.g. `gpt-4o`, `claude-3-5-sonnet`) |
+| `EDITH_API_KEY` | API key from your provider |
 | `EDITH_BASE_URL` | Base URL of the OpenAI-compatible endpoint |
+| `EDITH_MODEL_NAME` | Model identifier (e.g. `gpt-4o`, `claude-3-5-sonnet`, `llama3`) |
+
+The config is read from `~/.env` at startup. Edith does not touch your project files during configuration.
 
 ---
 
 ## Usage
 
-Once configured, launch Edith from any terminal:
+Navigate to the folder you want to work in, then launch Edith:
 
 ```bash
+cd your-project
 edith
 ```
+
+**Trust prompt.** The first time you run Edith in a folder, it will ask whether you trust it. Answering `y` creates a `.edith/TRUST` marker file in the current directory. Subsequent launches in the same folder skip this step. If you answer `n`, Edith exits immediately without doing anything.
+
+Once running, type your request at the `>> ` prompt and press Enter.
+
+---
+
+## Tools
+
+Edith has four built-in tools it can invoke autonomously to complete tasks:
+
+| Tool | What it does | Requires confirmation |
+|---|---|---|
+| `WebSearch` | Searches the web using DuckDuckGo | No |
+| `ReadFile` | Reads a local file and returns its contents | No |
+| `WriteFile` | Creates or overwrites a file with new content | **Yes** |
+| `ShellCommand` | Runs a bash command in the current directory | **Yes** |
+
+For `WriteFile` and `ShellCommand`, Edith will always pause and show you exactly what it is about to do before asking `Allow? (y/n)`. Typing anything other than `y` or `yes` cancels the action. The model is instructed not to retry a denied action.
+
+---
+
+## Commands
+
+Type these at the prompt at any time:
+
+| Command | Description |
+|---|---|
+| `/clear` | Clear the terminal and redraw the banner |
+| `/copy` | Copy the last response to the clipboard |
+| `/reset` | Wipe the conversation history (model forgets the session) |
+| `/exit` | Exit Edith cleanly |
+| `/help` | Show the command list |
 
 ---
 
 ## Reporting Issues
 
-If you encounter a bug or unexpected behavior, please open an issue on the [GitHub repository](https://github.com/sapirrior/code-edith/issues).
+Open an issue on the [GitHub repository](https://github.com/sapirrior/code-edith/issues).
 
 ---
 
 ## License
-This project is licensed under Apache-2.0 license. See the [LICENSE](LICENSE) file for details regarding personal and commercial use.
 
----
+Apache-2.0. See [LICENSE](LICENSE) for details.
 
-***Happy Coding!***
+FILE_END README.md d978424b90c4
 
-*by Nolan Stark.*
-
-FILE_END README.md 7d7ea8824c82
-
-FILE_START pyproject.toml e89b1dd6d8d4
+FILE_START pyproject.toml 991da217a834
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
@@ -384,7 +432,7 @@ dependencies = [
     "python-dotenv",
     "openai",
     "halo",
-    "prompt_toolkit"
+    "prompt_toolkit",
     "ddgs"
 ]
 
@@ -404,7 +452,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.json"]
 
-FILE_END pyproject.toml e89b1dd6d8d4
+FILE_END pyproject.toml 991da217a834
 
 FILE_START .assets/edith-asi-art.txt 02ddfd464968
  ▛███▜
@@ -417,6 +465,80 @@ FILE_START .assets/edith-asi-unicode.txt dd1759322a25
 \u259B\u2588\u2588\u2588\u2588\u2588\u259C
 \u0020\u2598\u2598\u0020\u259D\u259D
 FILE_END .assets/edith-asi-unicode.txt dd1759322a25
+
+FILE_START .github/workflows/python-publish.yml 88d3deb6ad29
+# This workflow will upload a Python Package to PyPI when a release is created
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Upload Python Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  release-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build release distributions
+        run: |
+          # NOTE: put your own distribution build steps here.
+          python -m pip install build
+          python -m build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+  pypi-publish:
+    runs-on: ubuntu-latest
+    needs:
+      - release-build
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+
+    # Dedicated environments with protections for publishing are strongly recommended.
+    # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
+    environment:
+      name: pypi
+      # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
+      # url: https://pypi.org/p/YOURPROJECT
+      #
+      # ALTERNATIVE: if your GitHub Release name is the PyPI project version string
+      # ALTERNATIVE: exactly, uncomment the following line instead:
+      # url: https://pypi.org/project/YOURPROJECT/${{ github.event.release.name }}
+
+    steps:
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+FILE_END .github/workflows/python-publish.yml 88d3deb6ad29
 
 FILE_START src/index.py 1477663d7182
 import os
@@ -478,9 +600,9 @@ def main():
         exit(0)
 FILE_END src/index.py 1477663d7182
 
-FILE_START src/config/system.txt 04ec9781734e
+FILE_START src/config/system.txt 98ee6d2c87d0
 <identity>
-The Year is 2026, You are Edith ("code-edith"), a CLI coding agent built by Nolan Stark.
+The current year is 2026, You are Edith ("code-edith"), a CLI coding agent built by Nolan Stark.
 </identity>
 
 <personality>
@@ -514,7 +636,7 @@ One-line refusal, no elaboration.
 - Prefer minimal, readable output.
 </format>
 
-FILE_END src/config/system.txt 04ec9781734e
+FILE_END src/config/system.txt 98ee6d2c87d0
 
 FILE_START src/config/tools.json e70ab465023f
 [
@@ -579,19 +701,21 @@ FILE_START src/config/tools.json e70ab465023f
 
 FILE_END src/config/tools.json e70ab465023f
 
-FILE_START src/config/version.txt 3408b90a4f08
-26.0.3
-FILE_END src/config/version.txt 3408b90a4f08
+FILE_START src/config/version.txt 1af52911593c
+26.0.7
+FILE_END src/config/version.txt 1af52911593c
 
 FILE_START src/engine/__init__.py empty000000
 EMPTY_CONTENT
 FILE_END src/engine/__init__.py empty000000
 
-FILE_START src/engine/chat.py 6d66632acb65
+FILE_START src/engine/chat.py dc0c17698ba0
 import json
 from pathlib import Path
 from engine.tool_handler import handle_tool_call
 from utils.history import add_history
+from helper.animation import animation
+from helper.print_md import print_md
 
 def make_request(client, msgs, model):
     src_dir = Path(__file__).resolve().parent.parent
@@ -616,10 +740,12 @@ def make_request(client, msgs, model):
         if not msg.tool_calls:
             return msg.content or ""
 
-        # FIX: Ensure 'content' key exists for OpenAI API compliance
+        if msg.content:
+            animation(False)
+            print_md(msg.content)
+
         assistant_msg = msg.model_dump()
-        if assistant_msg.get("content") is None:
-            assistant_msg["content"] = ""
+        assistant_msg["content"] = assistant_msg.get("content") or ""
 
         messages.append(assistant_msg)
         add_history(assistant_msg)
@@ -629,7 +755,7 @@ def make_request(client, msgs, model):
             name = tool_call.function.name
             try:
                 args = json.loads(tool_call.function.arguments)
-            except json.JSONDecodeError:
+            except (json.JSONDecodeError, TypeError):
                 args = {}
 
             result = handle_tool_call(name, args)
@@ -644,10 +770,10 @@ def make_request(client, msgs, model):
             add_history(tool_msg)
 
         messages.extend(tool_results)
+        animation(True, "Reasoning...")
 
     return ""
-
-FILE_END src/engine/chat.py 6d66632acb65
+FILE_END src/engine/chat.py dc0c17698ba0
 
 FILE_START src/engine/client.py b91fdf4a9b95
 from openai import OpenAI
@@ -663,7 +789,7 @@ def load_client(key, url):
 		exit(1)
 FILE_END src/engine/client.py b91fdf4a9b95
 
-FILE_START src/engine/tool_handler.py 1ca390cc84ad
+FILE_START src/engine/tool_handler.py b6795d4afdb2
 import shutil
 import sys
 from rich.markup import escape
@@ -674,7 +800,6 @@ from engine.tools import web_search, read_file, write_file, shell_command
 from helper.animation import animation
 from utils.console import console
 
-# Brand colors (ANSI true color — matches animation.py)
 _ORANGE = "\033[38;2;217;119;87m"
 _GREY   = "\033[38;2;153;153;153m"
 _RESET  = "\033[0m"
@@ -696,19 +821,13 @@ TOOL_LABELS = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def _term_width() -> int:
     return shutil.get_terminal_size().columns - 2
 
 
 def _get_ext(target: str) -> str:
-    """Derive a Pygments-safe language identifier from a file path."""
     if "." in target:
         ext = target.rsplit(".", 1)[-1].lower()
-        # Guard: a real extension is short and contains no path separators
         if len(ext) <= 6 and "/" not in ext and "\\" not in ext:
             return ext
     return "text"
@@ -717,7 +836,6 @@ def _get_ext(target: str) -> str:
 TITLED_TOOLS = {"ReadFile", "WriteFile"}
 
 def _make_title(name: str, target: str) -> str:
-    """Build a Rich markup title. Only Read/Write show the path in the title."""
     label = TOOL_LABELS.get(name, name)
     if name in TITLED_TOOLS:
         safe_target = escape(target)
@@ -726,7 +844,6 @@ def _make_title(name: str, target: str) -> str:
 
 
 def _print_panel(name: str, target: str, content: str | None) -> None:
-    """Print a consistent bordered panel for every tool call."""
     if content:
         ext  = _get_ext(target)
         body = Syntax(content, ext, theme="monokai", word_wrap=True, background_color="default")
@@ -747,21 +864,15 @@ def _print_panel(name: str, target: str, content: str | None) -> None:
 
 
 def _confirm_prompt() -> str:
-    """
-    Print a colored Allow? prompt and return the raw user input.
-    Uses ANSI codes directly so the color renders regardless of
-    whether Rich's console.input() strips markup in the prompt.
-    """
     sys.stdout.write(f"   {_GREY}Allow?{_RESET} {_ORANGE}(y/n):{_RESET} ")
     sys.stdout.flush()
     return input()
 
 
-# ---------------------------------------------------------------------------
-# Public entry point
-# ---------------------------------------------------------------------------
-
 def handle_tool_call(name: str, args: dict) -> str:
+    if not isinstance(args, dict):
+        return "Error: Tool received invalid arguments."
+
     func = TOOL_MAP.get(name)
     if not func:
         return f"Error: Tool '{name}' not found."
@@ -769,7 +880,6 @@ def handle_tool_call(name: str, args: dict) -> str:
     target  = args.get("command") or args.get("path") or args.get("query") or "..."
     content = args.get("content")
 
-    # Always stop the spinner and show what's about to happen
     animation(False)
     console.print()
     _print_panel(name, target, content)
@@ -797,8 +907,7 @@ def handle_tool_call(name: str, args: dict) -> str:
         return f"Error executing {name}: {str(e)}"
     finally:
         animation(True, "Thinking...")
-
-FILE_END src/engine/tool_handler.py 1ca390cc84ad
+FILE_END src/engine/tool_handler.py b6795d4afdb2
 
 FILE_START src/engine/tools/__init__.py empty000000
 EMPTY_CONTENT

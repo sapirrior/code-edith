@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 from engine.tool_handler import handle_tool_call
 from utils.history import add_history
+from helper.animation import animation
+from helper.print_md import print_md
 
 def make_request(client, msgs, model):
     src_dir = Path(__file__).resolve().parent.parent
@@ -26,10 +28,12 @@ def make_request(client, msgs, model):
         if not msg.tool_calls:
             return msg.content or ""
 
-        # FIX: Ensure 'content' key exists for OpenAI API compliance
+        if msg.content:
+            animation(False)
+            print_md(msg.content)
+
         assistant_msg = msg.model_dump()
-        if assistant_msg.get("content") is None:
-            assistant_msg["content"] = ""
+        assistant_msg["content"] = assistant_msg.get("content") or ""
 
         messages.append(assistant_msg)
         add_history(assistant_msg)
@@ -39,7 +43,7 @@ def make_request(client, msgs, model):
             name = tool_call.function.name
             try:
                 args = json.loads(tool_call.function.arguments)
-            except json.JSONDecodeError:
+            except (json.JSONDecodeError, TypeError):
                 args = {}
 
             result = handle_tool_call(name, args)
@@ -54,5 +58,6 @@ def make_request(client, msgs, model):
             add_history(tool_msg)
 
         messages.extend(tool_results)
+        animation(True, "Reasoning...")
 
     return ""
