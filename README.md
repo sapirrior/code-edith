@@ -2,7 +2,7 @@
 
 A lightweight, terminal-based AI coding agent. Connects to any OpenAI-compatible API endpoint — hosted providers or self-hosted models both work.
 
-![License](https://img.shields.io/badge/license-Apache--2.0-orange) ![Python](https://img.shields.io/badge/python-3.10%2B-grey)
+![License](https://img.shields.io/badge/license-Apache--2.0-orange) ![Python](https://img.shields.io/badge/python-3.10%2B-orange) [![PyPI Downloads](https://static.pepy.tech/personalized-badge/code-edith?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=ORANGE&left_text=downloads)](https://pepy.tech/projects/code-edith)
 
 ---
 
